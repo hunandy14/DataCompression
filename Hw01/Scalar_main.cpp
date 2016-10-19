@@ -24,9 +24,9 @@ int main(int argc, char const *argv[]) {
     // 讀取檔案
     img.read(Pic_name_in);
     img.scalar(4);
-    img.write("IMG_COM.raw");
+    // cout << "img[0]=" << (int)img[1] << endl;
+    img.write("IMG_OUT-COM.raw");
     img.unscalar(4);
-
     // 提示訊息
     img.info();
     // 輸出檔案
