@@ -6,7 +6,6 @@ Final: 2016/10/05
 **********************************************************/
 #ifndef OPENRAW_CPP
 #define OPENRAW_CPP
-// using namespace imr;
 
 #include "OpenRAW_fun\OpenRAW"
 //=========================================================
@@ -38,31 +37,28 @@ namespace imr{
     void imgraw::unscalar(imint size=4){
         imgraw img_c(ImrSize(0, 0));
         imint new_size = ceil((this->filesize*8)/size);
-        // imint ori_size = this->filesize;
+        imint ori_size = this->filesize;
         img_c.resize_canvas(new_size);
         // 旗標
         int bit_idx=0, img_idx=0;
         // bit暫存
         bitset<8> bit;
-
-            cout << "ori[0]=" << ((bitset<8>)((*this)[0])) << endl;
-            cout << "ori[1]=" << ((bitset<8>)((*this)[1])) << endl;
-            cout << "ori[3]=" << ((bitset<8>)((*this)[2])) << endl;
         // 讀壓縮檔的點
-        for (int i = 0; i < 3; ++i){
+        for (int i = 0; i < (int)ori_size; ++i){
             // 讀每一位元
             for (int j = 0; j < 8; ++j){
-                // cout << "j=" << j << endl;
-                // bit[j] = ((bitset<8>)((*this)[img_idx]))[bit_idx];
-                // 旗標
+                bit[bit_idx+4] = ((bitset<8>)((*this)[i]))[j];
                 ++bit_idx;
+                // 旗標
                 if(bit_idx >= (int)size) {
+                    // cout << "bit=" << "[" << img_idx << "] " << bit << endl;
+                    img_c[img_idx] = (imch)bit.to_ulong();
                     bit_idx = 0;
-                    // (*this)[img_idx] = (imch)bit.to_ulong();
-                    cout << "bit[img_idx]=" << img_idx << "=" << bit << endl;
+                    bit.reset();
                     ++img_idx;
                 }
             }
+            
         }
         (*this) = img_c;
     }
