@@ -17,16 +17,16 @@ using namespace imr;
 #define Pic_name_out "IMG_OUT.raw"
 #define Pic_x 256
 #define Pic_y 256
+#define comp_bit 4
 
 int main(int argc, char const *argv[]) {
     // 創建畫布
     imgraw img(ImrSize(Pic_y, Pic_x));
     // 讀取檔案
     img.read(Pic_name_in);
-    img.scalar(4);
-    // cout << "img[0]=" << (int)img[1] << endl;
+    img.scalar(comp_bit);
     img.write("IMG_OUT-COM.raw");
-    img.unscalar(4);
+    img.unscalar(comp_bit);
     // 提示訊息
     img.info();
     // 輸出檔案
