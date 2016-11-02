@@ -12,12 +12,12 @@ Final: 2016/10/13
 using namespace std;
 using namespace imr;
 
-#define AutoOpen 0
+#define AutoOpen 1
 #define Pic_name_in "IMG.raw"
 #define Pic_name_out "IMG_OUT.raw"
 #define Pic_x 256
 #define Pic_y 256
-#define comp_bit 4
+#define comp_bit 3
 
 int main(int argc, char const *argv[]) {
     // ³Ð«Øµe¥¬

@@ -43,11 +43,11 @@ namespace imr{
         int bit_idx=0, img_idx=0;
         // bit暫存
         bitset<8> bit;
-        // 讀壓縮檔的點
+        // 讀壓縮檔的點(點是分區的最低值)
         for (int i = 0; i < (int)ori_size; ++i){
             // 讀每一位元
             for (int j = 0; j < 8; ++j){
-                bit[bit_idx+4] = ((bitset<8>)((*this)[i]))[j];
+                bit[bit_idx+(8-size)] = ((bitset<8>)((*this)[i]))[j];
                 ++bit_idx;
                 // 旗標
                 if(bit_idx >= (int)size) {
@@ -58,11 +58,18 @@ namespace imr{
                     ++img_idx;
                 }
             }
-            
+        }
+        // 修復數據(取中間值)
+        bit.reset();
+        for (int i = 0; i < 8-(int)size-1; ++i){
+            bit[i]=1;
+        }
+        for (int i = 0; i < (int)new_size; ++i){
+            img_c[i] += (imch)bit.to_ulong();;
+            // cout << "img_c[i]=" << (bitset<8>)img_c[i] << endl;
         }
         (*this) = img_c;
     }
-
 
     void imgraw::scalar(imint size=4){
         imgraw img_c(ImrSize(0, 0));
