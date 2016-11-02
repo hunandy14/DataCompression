@@ -123,6 +123,11 @@ namespace imr{
         imgraw operator+(const imch value);
         imgraw operator-(const imgraw &p);
         imgraw operator-(const imch value);
+        // new
+        void get_org(const imgraw &source);
+        int rand_int(int low, int up);
+        // void input_block(const imgraw &mask, );
+        void training(const imgraw &origin);
     private:
         ifstream::pos_type filesize;
         string filename;
