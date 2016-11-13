@@ -13,6 +13,9 @@ Final: 2016/10/05
 //-------------------------Structor------------------------
 //=========================================================
 #include "OpenRAW_fun\Structor.cpp"
+namespace imr {
+    imgraw::~imgraw()=default;
+} // imr
 //=========================================================
 //------------------------ImrSize--------------------------
 //=========================================================
@@ -35,6 +38,16 @@ Final: 2016/10/05
 #include "OpenRAW_fun\Operator.cpp"
 //=========================================================
 namespace imr {
+    // 讀區塊
+    ImrMask imgraw::block(imint idx){
+        // 初始化大小
+        this->setMaskSize(ImrSize(4,4));
+        // 讀取位置
+        imint y((idx/64)*4);
+        imint x((idx%64)*4);
+        return this->getMask(ImrCoor(y, x), ImrCoor(0,0));
+    }
+
     // 初始編碼簿 - 隨機取得
     void imgraw::get_org(const imgraw &source){
         srand((unsigned)time(NULL));

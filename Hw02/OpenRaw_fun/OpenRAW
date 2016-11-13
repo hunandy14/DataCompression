@@ -96,6 +96,7 @@ namespace imr{
     class imgraw {
     public:
         imgraw(ImrSize size);
+        ~imgraw();
         // imgraw
         void read(string filename);
         void write(string filename);
@@ -128,6 +129,7 @@ namespace imr{
         int rand_int(int low, int up);
         // void input_block(const imgraw &mask, );
         void training(const imgraw &origin);
+        ImrMask block(imint idx);
     private:
         ifstream::pos_type filesize;
         string filename;
