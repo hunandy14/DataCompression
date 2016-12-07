@@ -17,6 +17,7 @@ using namespace imr;
 #define Pic_name_in "IMG.raw"
 #define Pic_name_out "IMG_OUT.raw"
 #define Origin "origin.raw"
+#define idxcode "idxcode.raw"
 #define Pic_x 256
 #define Pic_y 256
 
@@ -27,30 +28,25 @@ int main(int argc, char const *argv[]) {
     // 讀取檔案
     img.read(Pic_name_in);
     //---------------------------------------------------------
+    // 建立編碼簿
     creat_ori(img);
     //---------------------------------------------------------
-    // 訓練編碼簿
+    // 建立清單
     imgraw codebook_tra(ImrSize(Pic_y/4, Pic_x/4));
-    codebook_tra.read(Origin);
-    // 取值
-    auto&& B = [&codebook_tra](imint i){
-        return ImrMask{codebook_tra.block(i)};
-    };
-
-    for (int j = 0; j < 4; ++j){
-        for (int i = 0; i < 4; ++i){
-            cout << setw(4) << (int)codebook_tra.at2d(j, i);
-        }cout << endl;
-    }cout << endl;
-
-    for (int i = 0; i < 16; ++i){
-        cout << setw(4) << (int)B(0)[i];
-    }cout << endl;
+    codebook_tra.training(img, Origin);
+    for (int i = 0; i < 256; ++i){
+        // cout << "tra=" << (int)codebook_tra[i] << endl;
+    }
+    codebook_tra.write(idxcode);
+    //---------------------------------------------------------
+    // 合併檔案還原
+    imgraw img2(ImrSize(Pic_y, Pic_x));
+    img2.merge(Origin, idxcode);
     //---------------------------------------------------------
     // 提示訊息
-    img.info();
+    img2.info();
     // 輸出檔案
-    img.write(Pic_name_out);
+    img2.write(Pic_name_out);
     // 開啟檔案
     if(AutoOpen==1)
         system(Pic_name_out);
@@ -59,8 +55,8 @@ int main(int argc, char const *argv[]) {
 
 void creat_ori(imgraw & img){
     // 建立編碼簿
-    imgraw codebook_ori(ImrSize(Pic_y/4, Pic_x/4));
+    imgraw origin(ImrSize(Pic_y/4, Pic_x/4));
     // 初始編碼簿 - 隨機取得
-    codebook_ori.get_org(img);
-    codebook_ori.write(Origin);
+    origin.get_org(img);
+    origin.write(Origin);
 }

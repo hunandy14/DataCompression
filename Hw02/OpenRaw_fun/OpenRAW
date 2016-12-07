@@ -14,6 +14,7 @@ Final: 2016/10/13
 #include <string>
 #include <iomanip>
 #include <sstream>
+#include <cmath>
 using namespace std;
 typedef unsigned char imch;
 typedef size_t imint;
@@ -128,8 +129,13 @@ namespace imr{
         void get_org(const imgraw &source);
         int rand_int(int low, int up);
         // void input_block(const imgraw &mask, );
-        void training(const imgraw &origin);
+        void training(imgraw& sou, string ori);
         ImrMask block(imint idx);
+        imch & block(imint idx, imint y, imint x);
+        imint comp(imgraw& sou);
+        imint comp_one(imgraw& sou, imint ori_idx);
+        // 合併檔案
+        void merge(string ori, string idx);
     private:
         ifstream::pos_type filesize;
         string filename;
