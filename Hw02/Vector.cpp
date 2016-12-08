@@ -32,6 +32,7 @@ namespace imr {
 //------------------------imgraw---------------------------
 //=========================================================
 #include "OpenRAW_fun\imgraw.cpp"
+#include "ImrBlock.cpp"
 //=========================================================
 //------------------------Operator-------------------------
 //=========================================================
@@ -40,10 +41,8 @@ namespace imr {
 namespace imr {
 // 複製區塊
 
-imgraw::Block imgraw::block_copy(imint pos){
-    Block block((*this), pos);
-
-    return block;
+imgraw::ImrBlock imgraw::block_copy(imint pos){ 
+    return ImrBlock((*this), pos);
 }
 // 合併檔案
 void imgraw::merge(string ori_name, string idx_name){
@@ -52,21 +51,17 @@ void imgraw::merge(string ori_name, string idx_name){
     imgraw idx(ImrSize(64, 64));
     idx.read(idx_name);
 
-    this->block_copy(0) = ori.block_copy(0);
-    this->block_copy(0).info();
+    // this->block_copy(0) = ori.block_copy(0);
+    // this->block_copy(0).info();
 
-    // 如何實作?
-    // this->block_copy(0)=ori.block_copy(0);
-    // this->block2(0, 0) = (imch)10;
     // 寫入檔案
-    for (int j= 0, c =0; j < 512; ++j){
-        for (int i = 0; i < 16; ++i){
-            this->block2(j, i) = ori.block(idx[c])[i];
-            // this->block2(j)[i] = (imch)10;
-            // 這裡有問題居然不能寫入
-            // cout << (int)this->block(j)[i] << " ";
-            c++;
-        }
+    for (int j= 0, c =0; j < 4096; ++j){
+        this->block_copy(j) = ori.block_copy(idx[c]);
+        // this->block_copy(j);
+        // cout << (int)idx[c] << endl;
+        // 這裡有問題居然不能寫入
+        // cout << (int)this->block(j)[i] << " ";
+        c++;
     }
 }
 
