@@ -38,19 +38,33 @@ namespace imr {
 #include "OpenRAW_fun\Operator.cpp"
 //=========================================================
 namespace imr {
+// 複製區塊
+
+imgraw::Block imgraw::block_copy(imint pos){
+    Block block((*this), pos);
+
+    return block;
+}
 // 合併檔案
 void imgraw::merge(string ori_name, string idx_name){
     imgraw ori(ImrSize(64, 64));
     ori.read(ori_name);
     imgraw idx(ImrSize(64, 64));
     idx.read(idx_name);
+
+    this->block_copy(0) = ori.block_copy(0);
+    this->block_copy(0).info();
+
+    // 如何實作?
+    // this->block_copy(0)=ori.block_copy(0);
+    // this->block2(0, 0) = (imch)10;
     // 寫入檔案
-    for (int j= 0, c =0; j < 4; ++j){
+    for (int j= 0, c =0; j < 512; ++j){
         for (int i = 0; i < 16; ++i){
-            this->block(j)[i] = ori.block(idx[c])[i];
-            this->block(j)[i] = (imch)10;
+            this->block2(j, i) = ori.block(idx[c])[i];
+            // this->block2(j)[i] = (imch)10;
             // 這裡有問題居然不能寫入
-            cout << (int)this->block(j)[i] << " ";
+            // cout << (int)this->block(j)[i] << " ";
             c++;
         }
     }
@@ -127,11 +141,17 @@ void imgraw::training(imgraw& sou, string ori){
     // return 
 }
 // 讀區塊(返回ref)
-imch & imgraw::block(imint idx, imint idx_y, imint idx_x){
-    imint y=((idx/64)*4);
-    imint x=((idx%64)*4);
 
-    return this->maskVal(ImrCoor(y, x), 
+imch & imgraw::block2(imint pos, imint idx){
+    imint blk_y=((pos/64)*4);
+    imint blk_x=((pos%64)*4);
+    return this->maskVal(ImrCoor(blk_y, blk_x), 
+        ImrCoor(idx/4, idx%4), ImrCoor(0, 0));
+}
+imch & imgraw::block(imint idx, imint idx_y, imint idx_x){
+    imint blk_y=((idx/64)*4);
+    imint blk_x=((idx%64)*4);
+    return this->maskVal(ImrCoor(blk_y, blk_x), 
         ImrCoor(idx_y, idx_x), ImrCoor(0, 0));
 }
 // 讀區塊(返回 vlaue arr)

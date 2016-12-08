@@ -132,10 +132,13 @@ namespace imr{
         void training(imgraw& sou, string ori);
         ImrMask block(imint idx);
         imch & block(imint idx, imint y, imint x);
+        imch & block2(imint pos, imint idx);
         imint comp(imgraw& sou);
         imint comp_one(imgraw& sou, imint ori_idx);
         // 合併檔案
         void merge(string ori, string idx);
+        class Block;
+        Block block_copy(imint pos);
     private:
         ifstream::pos_type filesize;
         string filename;
@@ -148,6 +151,54 @@ namespace imr{
         void histogram();
         void extremum();
         ImrSize masksize;
+    };
+    /*
+         ##        ###                       ##
+         ##         ##                       ##
+         ######     ##      #####    #####   ##  ##
+         ##   ##    ##     ##   ##  ##       ## ##
+         ##   ##    ##     ##   ##  ##       ####
+         ##   ##    ##     ##   ##  ##       ## ##
+         ######    ####     #####    #####   ##  ##
+
+    */
+    class imgraw::Block{
+    public:
+        Block(imgraw& img, imint pos){
+            this->pos_y=((pos/64)*4);
+            this->pos_x=((pos%64)*4);
+            img_p.resize(16);
+            for (int j=0, c=0; j < 4; ++j){
+                for (int i = 0; i < 4; ++i){
+                    img_p[c++]=&img.at2d(j+pos_y, i+pos_x);
+                }
+            }
+        }
+        void info(){
+            for (int i = 0, c = 0; i < 4; ++i){
+                for (int j = 0; j < 4; ++j){
+                    cout << (int)*(img_p[c++]) << " ";
+                }cout << endl;
+            }
+        }
+
+        imch& operator[](const size_t __n){
+            return *img_p[__n];
+        }
+        const imch& operator[](const size_t __n) const{
+            return *img_p[__n];
+        }
+        void operator=(Block b){
+            for (int i = 0; i < 16; ++i){
+                *(this->img_p[i])=*(b.img_p[i]);
+            }
+        }
+
+
+    private:
+        vector<imch*> img_p;
+        imint pos_y;
+        imint pos_x;
     };
 };
 
