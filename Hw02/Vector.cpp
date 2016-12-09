@@ -40,32 +40,22 @@ namespace imr {
 //=========================================================
 namespace imr {
 // 複製區塊
-
 imgraw::ImrBlock imgraw::block_copy(imint pos){ 
     return ImrBlock((*this), pos);
 }
+
+//----------------------------------------------------------------
 // 合併檔案
 void imgraw::merge(string ori_name, string idx_name){
     imgraw ori(ImrSize(64, 64));
     ori.read(ori_name);
     imgraw idx(ImrSize(64, 64));
     idx.read(idx_name);
-
-    // this->block_copy(0) = ori.block_copy(0);
-    // this->block_copy(0).info();
-
     // 寫入檔案
     for (int j= 0, c =0; j < 4096; ++j){
-        this->block_copy(j) = ori.block_copy(idx[c]);
-        // this->block_copy(j);
-        // cout << (int)idx[c] << endl;
-        // 這裡有問題居然不能寫入
-        // cout << (int)this->block(j)[i] << " ";
-        c++;
+        this->block_copy(j) = ori.block_copy(idx[c++]);
     }
 }
-
-
 //----------------------------------------------------------------
 // 找相似 sou[0]比對 *this[all]
     // comp(區塊頭參考)
@@ -158,49 +148,24 @@ ImrMask imgraw::block(imint idx){
     imint x=((idx%64)*4);
     return this->getMask(ImrCoor(y, x), ImrCoor(0,0));
 }
-
+//----------------------------------------------------------------
 // 初始編碼簿 - 隨機取得
-void imgraw::get_org(const imgraw &source){
+void imgraw::get_org(imgraw &sou){
     srand((unsigned)time(NULL));
-    // 畫布長度
-    // int len = this->high*this->width;
-    // cout << "len=" << this->width << endl;
-    // int len_sou = source.high*source.width;
-    // 建立臨時畫布
-    ImrSize source_size(source.high, source.width);
-    ImrMask round(source_size);
-    // 儲存座標
-    ImrCoor idx[256];
     // 隨機找256個點寫入1
+    vector<imint> arr(4096);
     for (int i = 0; i < 256; ++i){
-        int y = rand_int(0,63);
-        int x = rand_int(0,63);
-        if (round.at2d(y, x) != 1){
-            round.at2d(y, x) = (imch)1;
-            idx[i].x = x*4;
-            idx[i].y = y*4;
-        }else {--i;}
-        // idx[i].info();
-    }
-    // 寫入編碼簿
-    for (int j=0, c=0; j < 16; ++j){
-        for (int i = 0; i < 16; ++i){
-            // 編碼簿上的區塊位置
-            ImrCoor ori(j*4, i*4);
-            // mask位移位置
-            ImrCoor shi(0, 0);
-            // 以4*4為單位寫入
-            for (int k = 0; k < 4; ++k){
-                for (int l = 0; l < 4; ++l){
-                    ImrCoor mas(k, l);
-                    // 編碼簿上的區塊 << 座標上的區塊
-                    this->maskVal(ori, mas, shi) = 
-                    source.maskVal(idx[c], mas, shi);
-                }
-            } c++;
+        imint rand = rand_int(0,256);
+        if( arr[rand] == 0){
+            arr[rand] = 1;
+            this->block_copy(i) = sou.block_copy(rand);
+            // sou.block_copy(rand).info();
+        }else{
+            --i;
         }
     }
 }
+//----------------------------------------------------------------
 // 取亂數(不包含up)
 int imgraw::rand_int(int low, int up){
     int temp;
@@ -209,6 +174,6 @@ int imgraw::rand_int(int low, int up){
     temp = (int)((rand() / (RAND_MAX+1.0)) * (up - low) + low);
     return temp;
 }
+//----------------------------------------------------------------
 } // imr
-
 #endif

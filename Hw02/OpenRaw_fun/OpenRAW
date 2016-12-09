@@ -126,7 +126,7 @@ public:
     imgraw operator-(const imgraw &p);
     imgraw operator-(const imch value);
     // new
-    void get_org(const imgraw &source);
+    void get_org(imgraw &sou);
     int rand_int(int low, int up);
     // void input_block(const imgraw &mask, );
     void training(imgraw& sou, string ori);
