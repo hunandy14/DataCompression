@@ -28,22 +28,25 @@ int main(int argc, char const *argv[]) {
     img.read(Pic_name_in);
     //---------------------------------------------------------
     // 建立編碼簿
-    imgraw origin(ImrSize(64, 64));
+    imgraw ori(ImrSize(64, 64));
     // 初始編碼簿 - 隨機取得
-    origin.get_org(Pic_name_in);
-    origin.write(Origin);
+    ori.get_org(Pic_name_in);
+    ori.write(Origin);
     //---------------------------------------------------------
-    // 建立清單
+    // 建立索引
+    imgraw idx(ImrSize(64, 64));
+    idx.get_idx(Pic_name_in, Origin);
+    // imgraw idx(ImrSize(64, 64));
     // imgraw codebook_tra(ImrSize(64, 64));
     // codebook_tra.training(img, Origin);
     // codebook_tra.write(idxcode);
     //---------------------------------------------------------
     // 合併檔案還原
-    // imgraw img2(ImrSize(Pic_y, Pic_x));
-    // img2.merge(Origin, idxcode);
+    imgraw img2(ImrSize(Pic_y, Pic_x));
+    img2.merge(Origin, idxcode);
     //---------------------------------------------------------
-    // img2.info();
-    // img2.write(Pic_name_out);
+    img2.info();
+    img2.write(Pic_name_out);
     //---------------------------------------------------------
     // 開啟檔案
     if(AutoOpen==1)

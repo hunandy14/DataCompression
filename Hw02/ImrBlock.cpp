@@ -15,7 +15,6 @@ imgraw::ImrBlock::ImrBlock(imgraw& img, imint pos){
         }
     }
 }
-
 void imgraw::ImrBlock::info(){
     for (int i = 0, c = 0; i < 4; ++i){
         for (int j = 0; j < 4; ++j){
@@ -23,7 +22,6 @@ void imgraw::ImrBlock::info(){
         }cout << endl;
     }
 }
-
 imch& imgraw::ImrBlock::operator[](const size_t __n){
     return *(this->img_p[__n]);
 }

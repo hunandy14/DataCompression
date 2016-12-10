@@ -92,7 +92,6 @@ void imgraw::training(imgraw& sou, string ori){
 }
 //----------------------------------------------------------------
 // 讀區塊(返回ref)
-
 imch & imgraw::block2(imint pos, imint idx){
     imint blk_y=((pos/64)*4);
     imint blk_x=((pos%64)*4);
@@ -113,6 +112,14 @@ ImrMask imgraw::block(imint idx){
     imint y=((idx/64)*4);
     imint x=((idx%64)*4);
     return this->getMask(ImrCoor(y, x), ImrCoor(0,0));
+}
+// 取得索引
+void imgraw::get_idx(string sou_name, string ori_name){
+    imgraw sou(ImrSize(256, 256));
+    sou.read(sou_name);
+    imgraw ori(ImrSize(64, 64));
+    ori.read(ori_name);
+    
 }
 //----------------------------------------------------------------
 // 合併檔案
