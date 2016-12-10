@@ -39,23 +39,6 @@ namespace imr {
 #include "OpenRAW_fun\Operator.cpp"
 //=========================================================
 namespace imr {
-// 複製區塊
-imgraw::ImrBlock imgraw::block_copy(imint pos){ 
-    return ImrBlock((*this), pos);
-}
-
-//----------------------------------------------------------------
-// 合併檔案
-void imgraw::merge(string ori_name, string idx_name){
-    imgraw ori(ImrSize(64, 64));
-    ori.read(ori_name);
-    imgraw idx(ImrSize(64, 64));
-    idx.read(idx_name);
-    // 寫入檔案
-    for (int j= 0, c =0; j < 4096; ++j){
-        this->block_copy(j) = ori.block_copy(idx[c++]);
-    }
-}
 //----------------------------------------------------------------
 // 找相似 sou[0]比對 *this[all]
     // comp(區塊頭參考)
@@ -105,26 +88,9 @@ imint imgraw::comp_one(imgraw& sou, imint sou_idx){
 // 訓練(返回找好的idx)
 void imgraw::training(imgraw& sou, string ori){
     this->read(ori);
-    // 取值(第幾個區塊)
-    // auto&& B= [&](imint i){
-    //     return ImrMask{this->block(i)};
-    // };
-    // 使用範例
-    // B(0).info();
-    // cout << endl;
-    // 取值(第幾個區塊)
-    // auto&& B2= [&](imint i){
-    //     return ImrMask{sou.block(i)};
-    // };
-    // 使用範例
-    // B2(0).info();
-    //----------------------------------------------------------------
     this->comp(sou);
-    
-
-    // 返回找好的idx
-    // return 
 }
+//----------------------------------------------------------------
 // 讀區塊(返回ref)
 
 imch & imgraw::block2(imint pos, imint idx){
@@ -149,9 +115,24 @@ ImrMask imgraw::block(imint idx){
     return this->getMask(ImrCoor(y, x), ImrCoor(0,0));
 }
 //----------------------------------------------------------------
+// 合併檔案
+void imgraw::merge(string ori_name, string idx_name){
+    ImrSize size(64, 64);
+    imgraw ori(size);
+    ori.read(ori_name);
+    imgraw idx(size);
+    idx.read(idx_name);
+    // 寫入檔案
+    for (int j= 0, c =0; j < 4096; ++j)
+        this->block_copy(j) = ori.block_copy(idx[c++]);
+}
 // 初始編碼簿 - 隨機取得
-void imgraw::get_org(imgraw &sou){
+void imgraw::get_org(string sou_name){
     srand((unsigned)time(NULL));
+    // 讀檔
+    ImrSize size(256, 256);
+    imgraw sou(size);
+    sou.read(sou_name);
     // 隨機找256個點寫入1
     vector<imint> arr(4096);
     for (int i = 0; i < 256; ++i){
@@ -159,6 +140,7 @@ void imgraw::get_org(imgraw &sou){
         if( arr[rand] == 0){
             arr[rand] = 1;
             this->block_copy(i) = sou.block_copy(rand);
+            // this->block_copy(i).info();
             // sou.block_copy(rand).info();
         }else{
             --i;
@@ -166,6 +148,10 @@ void imgraw::get_org(imgraw &sou){
     }
 }
 //----------------------------------------------------------------
+// 複製區塊
+imgraw::ImrBlock imgraw::block_copy(imint pos){ 
+    return ImrBlock((*this), pos);
+}
 // 取亂數(不包含up)
 int imgraw::rand_int(int low, int up){
     int temp;

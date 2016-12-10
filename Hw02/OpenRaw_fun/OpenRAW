@@ -125,20 +125,22 @@ public:
     imgraw operator+(const imch value);
     imgraw operator-(const imgraw &p);
     imgraw operator-(const imch value);
-    // new
-    void get_org(imgraw &sou);
-    int rand_int(int low, int up);
-    // void input_block(const imgraw &mask, );
+    // 新增的
+    void get_idx(string ori, string idx);
     void training(imgraw& sou, string ori);
     ImrMask block(imint idx);
     imch & block(imint idx, imint y, imint x);
     imch & block2(imint pos, imint idx);
     imint comp(imgraw& sou);
     imint comp_one(imgraw& sou, imint ori_idx);
+    // 取得初始編碼簿
+    void get_org(string sou);
     // 合併檔案
     void merge(string ori, string idx);
     class ImrBlock;
     ImrBlock block_copy(imint pos);
+    // 取亂數
+    int rand_int(int low, int up);
 private:
     ifstream::pos_type filesize;
     string filename;

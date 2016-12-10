@@ -28,24 +28,22 @@ int main(int argc, char const *argv[]) {
     img.read(Pic_name_in);
     //---------------------------------------------------------
     // 建立編碼簿
-    imgraw origin(ImrSize(Pic_y/4, Pic_x/4));
+    imgraw origin(ImrSize(64, 64));
     // 初始編碼簿 - 隨機取得
-    origin.get_org(img);
+    origin.get_org(Pic_name_in);
     origin.write(Origin);
     //---------------------------------------------------------
     // 建立清單
-    imgraw codebook_tra(ImrSize(Pic_y/4, Pic_x/4));
-    codebook_tra.training(img, Origin);
-    // for (int i = 0; i < 256; ++i){
-        // cout << "tra=" << (int)codebook_tra[i] << endl;
-    // }
-    codebook_tra.write(idxcode);
+    // imgraw codebook_tra(ImrSize(64, 64));
+    // codebook_tra.training(img, Origin);
+    // codebook_tra.write(idxcode);
     //---------------------------------------------------------
     // 合併檔案還原
-    imgraw img2(ImrSize(Pic_y, Pic_x));
-    img2.merge(Origin, idxcode);
-    img2.info();
-    img2.write(Pic_name_out);
+    // imgraw img2(ImrSize(Pic_y, Pic_x));
+    // img2.merge(Origin, idxcode);
+    //---------------------------------------------------------
+    // img2.info();
+    // img2.write(Pic_name_out);
     //---------------------------------------------------------
     // 開啟檔案
     if(AutoOpen==1)
