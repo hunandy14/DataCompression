@@ -172,6 +172,7 @@ public:
     imch& operator[](const size_t __n);
     const imch& operator[](const size_t __n) const;
     void operator=(ImrBlock b);
+    int dif_seq(imgraw& img);
 private:
     vector<imch*> img_p;
     imint pos_y;

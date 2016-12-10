@@ -36,6 +36,8 @@ int main(int argc, char const *argv[]) {
     // «Ø¥ß¯Á¤Þ
     imgraw idx(ImrSize(64, 64));
     idx.get_idx(Pic_name_in, Origin);
+
+    
     // imgraw idx(ImrSize(64, 64));
     // imgraw codebook_tra(ImrSize(64, 64));
     // codebook_tra.training(img, Origin);

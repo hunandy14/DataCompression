@@ -119,7 +119,38 @@ void imgraw::get_idx(string sou_name, string ori_name){
     sou.read(sou_name);
     imgraw ori(ImrSize(64, 64));
     ori.read(ori_name);
-    
+    for (int i = 0; i < 256; ++i){
+        (*this)[i];
+        // sou的i區塊與ori每個區塊比對
+        sou.block_copy(i).dif_seq(ori);
+    }
+}
+// this的單一區塊與 img(ori)每個區塊比對
+int imgraw::ImrBlock::dif_seq(imgraw& img){
+    // 區塊點的 差平方和 算一次要存下來
+    vector<long int> img_arr(256);
+    long int num, temp=-1;
+    // int idx=0;
+    for (int j = 0; j < 256; ++j){
+        // img(ori)區塊
+        num=0;
+        for (int i = 0; i < 16; ++i){
+            num+=pow(((int)(*this)[i] - 
+                (int)img.block_copy(j)[i]), 2);
+        }
+        // cout << "num=" << num << endl;
+
+        if(num < temp or temp==-1){
+            // cout << "num=" << num << "j=" << j << endl;
+            temp=num;
+        }
+        // cout << endl;
+        // cout << "    num=" << num << endl;
+    }
+    //為什麼全部都能找到0的 QuQ
+    cout << "temp=" << temp << endl;
+    // cout << endl;
+    return 0;
 }
 //----------------------------------------------------------------
 // 合併檔案
