@@ -42,11 +42,12 @@ int imgraw::ImrBlock::dif_squ(imgraw& img){
     imint idx=0;
     // 比對 img 內的區塊，找出最小差平方和的位置
     for (int j = 0; j < 256; ++j, num=0){
-        // img(ori)區塊
-        // 計算 差平方和
+        // 建立區塊
+        auto&& img_b=img.block(j);
+        // 計算差平方和
         for (int i = 0; i < 16; ++i){
-            num+=pow(((int)(*this)[i] - 
-                (int)img.block(j)[i]), 2);
+            num += pow(((int)(*this)[i]
+                - (int)img_b[i]), 2);
         }
         // 找 差平方和 最小的位置
         if(num < min or min==-1){

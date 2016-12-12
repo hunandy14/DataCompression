@@ -33,9 +33,9 @@ int main(int argc, char const *argv[]) {
     ori.write(Origin);
     //---------------------------------------------------------
     // 建立索引
-    imgraw idx(ImrSize(64, 64));
-    idx.get_idx(Pic_name_in, Origin);
-    idx.write(Idxcode);
+    // imgraw idx(ImrSize(64, 64));
+    // idx.get_idx(Pic_name_in, Origin);
+    // idx.write(Idxcode);
     //---------------------------------------------------------
     // 合併檔案還原
     imgraw img2(ImrSize(Pic_y, Pic_x));
