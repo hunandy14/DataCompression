@@ -119,38 +119,40 @@ void imgraw::get_idx(string sou_name, string ori_name){
     sou.read(sou_name);
     imgraw ori(ImrSize(64, 64));
     ori.read(ori_name);
-    for (int i = 0; i < 256; ++i){
-        (*this)[i];
+    // 找出最小平方差
+    for (int i = 0; i < 4096; ++i){
         // sou的i區塊與ori每個區塊比對
-        sou.block_copy(i).dif_seq(ori);
+        (*this)[i]=(imch)sou.block_copy(i).dif_seq(ori);
     }
 }
 // this的單一區塊與 img(ori)每個區塊比對
 int imgraw::ImrBlock::dif_seq(imgraw& img){
     // 區塊點的 差平方和 算一次要存下來
     vector<long int> img_arr(256);
-    long int num, temp=-1;
-    // int idx=0;
-    for (int j = 0; j < 256; ++j){
+    long int num, min=-1;
+    imint idx=0;
+    // 比對 img 內的區塊，找出最小差平方和的位置
+    for (int j = 0; j < 256; ++j, num=0){
         // img(ori)區塊
-        num=0;
+        // 計算 差平方和
         for (int i = 0; i < 16; ++i){
             num+=pow(((int)(*this)[i] - 
                 (int)img.block_copy(j)[i]), 2);
         }
         // cout << "num=" << num << endl;
-
-        if(num < temp or temp==-1){
-            // cout << "num=" << num << "j=" << j << endl;
-            temp=num;
+        // 找 差平方和 最小的位置
+        if(num < min or min==-1){
+            // cout << "num=" << num << "   j=" << j << endl;
+            min=num;
+            idx=j;
         }
         // cout << endl;
         // cout << "    num=" << num << endl;
     }
-    //為什麼全部都能找到0的 QuQ
-    cout << "temp=" << temp << endl;
+    // cout << "min=" << min;
+    // cout << ", idx=" << idx << endl;
     // cout << endl;
-    return 0;
+    return idx;
 }
 //----------------------------------------------------------------
 // 合併檔案
@@ -174,7 +176,8 @@ void imgraw::get_org(string sou_name){
     // 隨機找256個點寫入1
     vector<imint> arr(4096);
     for (int i = 0; i < 256; ++i){
-        imint rand = rand_int(0,256);
+        imint rand = rand_int(0,4096);
+        // 找過的標記避免重複
         if( arr[rand] == 0){
             arr[rand] = 1;
             this->block_copy(i) = sou.block_copy(rand);
