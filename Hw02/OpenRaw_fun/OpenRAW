@@ -166,7 +166,7 @@ public:
     imch& operator[](const size_t __n);
     const imch& operator[](const size_t __n) const;
     void operator=(ImrBlock b);
-    int dif_seq(imgraw& img);
+    int dif_squ(imgraw& img);
 private:
     vector<imch*> img_p;
     imint pos_y;

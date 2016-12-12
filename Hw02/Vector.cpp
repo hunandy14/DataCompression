@@ -73,7 +73,7 @@ void imgraw::get_idx(string sou_name, string ori_name){
     // 找出最小平方差
     for (int i = 0; i < 4096; ++i){
         // sou的i區塊與ori每個區塊比對
-        (*this)[i]=(imch)sou.block(i).dif_seq(ori);
+        (*this)[i]=(imch)sou.block(i).dif_squ(ori);
     }
 }
 // 合併檔案

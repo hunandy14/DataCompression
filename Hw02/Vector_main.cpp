@@ -41,8 +41,8 @@ int main(int argc, char const *argv[]) {
     imgraw img2(ImrSize(Pic_y, Pic_x));
     img2.merge(Origin, Idxcode);
     img2.write(Pic_name_out);
-    //---------------------------------------------------------
     img2.info();
+    //---------------------------------------------------------
     // ¶}±ÒÀÉ®×
     if(AutoOpen==1)
         system(Pic_name_out);

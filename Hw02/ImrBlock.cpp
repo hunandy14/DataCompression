@@ -35,7 +35,7 @@ void imgraw::ImrBlock::operator=(ImrBlock b){
 }
 
 // this的單一區塊與 img(ori)每個區塊比對
-int imgraw::ImrBlock::dif_seq(imgraw& img){
+int imgraw::ImrBlock::dif_squ(imgraw& img){
     // 區塊點的 差平方和 算一次要存下來
     vector<long int> img_arr(256);
     long int num, min=-1;
