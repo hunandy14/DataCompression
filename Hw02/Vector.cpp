@@ -40,6 +40,29 @@ namespace imr {
 //=========================================================
 namespace imr {
 //----------------------------------------------------------------
+// 初始編碼簿 - 隨機取得
+void imgraw::get_org(string sou_name){
+    srand((unsigned)time(NULL));
+    // 讀檔
+    ImrSize size(256, 256);
+    imgraw sou(size);
+    sou.read(sou_name);
+    // 隨機找256個點寫入1
+    vector<imint> arr(4096);
+    for (int i = 0; i < 256; ++i){
+        imint rand = rand_int(0,4096);
+        // 找過的標記避免重複
+        if( arr[rand] == 0){
+            arr[rand] = 1;
+            this->block(i) = sou.block(rand);
+        }
+        // 發現已經找過跳過一個
+        else{
+            // 補回這次浪費的步數
+            --i;
+        }
+    }
+}
 // 取得索引
 void imgraw::get_idx(string sou_name, string ori_name){
     // 開圖檔
@@ -64,29 +87,6 @@ void imgraw::merge(string ori_name, string idx_name){
     // 寫入檔案
     for (int j= 0, c =0; j < 4096; ++j)
         this->block(j) = ori.block(idx[c++]);
-}
-// 初始編碼簿 - 隨機取得
-void imgraw::get_org(string sou_name){
-    srand((unsigned)time(NULL));
-    // 讀檔
-    ImrSize size(256, 256);
-    imgraw sou(size);
-    sou.read(sou_name);
-    // 隨機找256個點寫入1
-    vector<imint> arr(4096);
-    for (int i = 0; i < 256; ++i){
-        imint rand = rand_int(0,4096);
-        // 找過的標記避免重複
-        if( arr[rand] == 0){
-            arr[rand] = 1;
-            this->block(i) = sou.block(rand);
-        }
-        // 發現已經找過跳過一個
-        else{
-            // 補回這次浪費的步數
-            --i;
-        }
-    }
 }
 //----------------------------------------------------------------
 // 複製區塊
