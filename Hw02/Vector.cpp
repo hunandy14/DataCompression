@@ -40,81 +40,9 @@ namespace imr {
 //=========================================================
 namespace imr {
 //----------------------------------------------------------------
-// 找相似 sou[0]比對 *this[all]
-    // comp(區塊頭參考)
-imint imgraw::comp(imgraw& sou){
-    imint idx=0;
-    imgraw temp= (*this);
-    for (int i = 0; i < 256; ++i){
-        (*this)[i]= (imch)temp.comp_one(sou, i);
-    }
-    return idx;
-}
-// 找單一點
-imint imgraw::comp_one(imgraw& sou, imint sou_idx){
-    // 取數值(第幾個區塊, 第幾個點)
-    auto&& Bf= [&](imint i, imint idx){
-        int y= idx/4;
-        int x= idx%4;
-        return this->block(i, y, x);
-    };
-    auto&& Bf2= [&](imint i, imint idx){
-        int y= idx/4;
-        int x= idx%4;
-        return sou.block(i, y, x);
-    };
-    // 使用範例
-    // cout << (int)Bf(0, 10) << endl;
-
-    // 找最相似
-    int temp=pow((int)(Bf(0, 0)-Bf2(0, 0)), 2);
-    int samll_idx=0;
-    for (int j= 0, sum= 0; j < 256; ++j){
-        sum= 0;
-        // 算術平均差
-        for (int i = 0; i < 16; ++i){
-            sum+= pow((int)(Bf(j, i)-Bf2(sou_idx, i)), 2);
-        }
-        if (sum < temp){
-            // cout << sum << " " << endl;
-            temp=sum;
-            samll_idx=j;
-        }
-    }
-    // cout << "samll_idx=" << samll_idx << endl;
-    return samll_idx;
-}
-
-// 訓練(返回找好的idx)
-void imgraw::training(imgraw& sou, string ori){
-    this->read(ori);
-    this->comp(sou);
-}
-//----------------------------------------------------------------
-// 讀區塊(返回ref)
-imch & imgraw::block2(imint pos, imint idx){
-    imint blk_y=((pos/64)*4);
-    imint blk_x=((pos%64)*4);
-    return this->maskVal(ImrCoor(blk_y, blk_x), 
-        ImrCoor(idx/4, idx%4), ImrCoor(0, 0));
-}
-imch & imgraw::block(imint idx, imint idx_y, imint idx_x){
-    imint blk_y=((idx/64)*4);
-    imint blk_x=((idx%64)*4);
-    return this->maskVal(ImrCoor(blk_y, blk_x), 
-        ImrCoor(idx_y, idx_x), ImrCoor(0, 0));
-}
-// 讀區塊(返回 vlaue arr)
-ImrMask imgraw::block(imint idx){
-    // 初始化大小
-    this->setMaskSize(ImrSize(4,4));
-    // 讀取位置
-    imint y=((idx/64)*4);
-    imint x=((idx%64)*4);
-    return this->getMask(ImrCoor(y, x), ImrCoor(0,0));
-}
 // 取得索引
 void imgraw::get_idx(string sou_name, string ori_name){
+    // 開圖檔
     imgraw sou(ImrSize(256, 256));
     sou.read(sou_name);
     imgraw ori(ImrSize(64, 64));
@@ -122,49 +50,20 @@ void imgraw::get_idx(string sou_name, string ori_name){
     // 找出最小平方差
     for (int i = 0; i < 4096; ++i){
         // sou的i區塊與ori每個區塊比對
-        (*this)[i]=(imch)sou.block_copy(i).dif_seq(ori);
+        (*this)[i]=(imch)sou.block(i).dif_seq(ori);
     }
 }
-// this的單一區塊與 img(ori)每個區塊比對
-int imgraw::ImrBlock::dif_seq(imgraw& img){
-    // 區塊點的 差平方和 算一次要存下來
-    vector<long int> img_arr(256);
-    long int num, min=-1;
-    imint idx=0;
-    // 比對 img 內的區塊，找出最小差平方和的位置
-    for (int j = 0; j < 256; ++j, num=0){
-        // img(ori)區塊
-        // 計算 差平方和
-        for (int i = 0; i < 16; ++i){
-            num+=pow(((int)(*this)[i] - 
-                (int)img.block_copy(j)[i]), 2);
-        }
-        // cout << "num=" << num << endl;
-        // 找 差平方和 最小的位置
-        if(num < min or min==-1){
-            // cout << "num=" << num << "   j=" << j << endl;
-            min=num;
-            idx=j;
-        }
-        // cout << endl;
-        // cout << "    num=" << num << endl;
-    }
-    // cout << "min=" << min;
-    // cout << ", idx=" << idx << endl;
-    // cout << endl;
-    return idx;
-}
-//----------------------------------------------------------------
 // 合併檔案
 void imgraw::merge(string ori_name, string idx_name){
     ImrSize size(64, 64);
+    // 開圖檔
     imgraw ori(size);
     ori.read(ori_name);
     imgraw idx(size);
     idx.read(idx_name);
     // 寫入檔案
     for (int j= 0, c =0; j < 4096; ++j)
-        this->block_copy(j) = ori.block_copy(idx[c++]);
+        this->block(j) = ori.block(idx[c++]);
 }
 // 初始編碼簿 - 隨機取得
 void imgraw::get_org(string sou_name){
@@ -180,17 +79,18 @@ void imgraw::get_org(string sou_name){
         // 找過的標記避免重複
         if( arr[rand] == 0){
             arr[rand] = 1;
-            this->block_copy(i) = sou.block_copy(rand);
-            // this->block_copy(i).info();
-            // sou.block_copy(rand).info();
-        }else{
+            this->block(i) = sou.block(rand);
+        }
+        // 發現已經找過跳過一個
+        else{
+            // 補回這次浪費的步數
             --i;
         }
     }
 }
 //----------------------------------------------------------------
 // 複製區塊
-imgraw::ImrBlock imgraw::block_copy(imint pos){ 
+imgraw::ImrBlock imgraw::block(imint pos){ 
     return ImrBlock((*this), pos);
 }
 // 取亂數(不包含up)

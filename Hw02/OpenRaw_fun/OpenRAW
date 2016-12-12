@@ -126,12 +126,6 @@ public:
     imgraw operator-(const imgraw &p);
     imgraw operator-(const imch value);
     // 新增的
-    void training(imgraw& sou, string ori);
-    ImrMask block(imint idx);
-    imch & block(imint idx, imint y, imint x);
-    imch & block2(imint pos, imint idx);
-    imint comp(imgraw& sou);
-    imint comp_one(imgraw& sou, imint ori_idx);
     // 取得索引
     void get_idx(string sou_name, string ori_name);
     // 取得初始編碼簿
@@ -139,7 +133,7 @@ public:
     // 合併檔案
     void merge(string ori_name, string idx_name);
     class ImrBlock;
-    ImrBlock block_copy(imint pos);
+    ImrBlock block(imint pos);
     // 取亂數
     int rand_int(int low, int up);
 private:

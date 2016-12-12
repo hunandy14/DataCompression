@@ -37,11 +37,6 @@ int main(int argc, char const *argv[]) {
     imgraw idx(ImrSize(64, 64));
     idx.get_idx(Pic_name_in, Origin);
     idx.write(idxcode);
-    
-    // imgraw idx(ImrSize(64, 64));
-    // imgraw codebook_tra(ImrSize(64, 64));
-    // codebook_tra.training(img, Origin);
-    // codebook_tra.write(idxcode);
     //---------------------------------------------------------
     // 合併檔案還原
     imgraw img2(ImrSize(Pic_y, Pic_x));

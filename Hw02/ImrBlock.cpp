@@ -33,4 +33,27 @@ void imgraw::ImrBlock::operator=(ImrBlock b){
         *(this->img_p[i])=*(b.img_p[i]);
     }
 }
+
+// this的單一區塊與 img(ori)每個區塊比對
+int imgraw::ImrBlock::dif_seq(imgraw& img){
+    // 區塊點的 差平方和 算一次要存下來
+    vector<long int> img_arr(256);
+    long int num, min=-1;
+    imint idx=0;
+    // 比對 img 內的區塊，找出最小差平方和的位置
+    for (int j = 0; j < 256; ++j, num=0){
+        // img(ori)區塊
+        // 計算 差平方和
+        for (int i = 0; i < 16; ++i){
+            num+=pow(((int)(*this)[i] - 
+                (int)img.block(j)[i]), 2);
+        }
+        // 找 差平方和 最小的位置
+        if(num < min or min==-1){
+            min=num;
+            idx=j;
+        }
+    }
+    return idx;
+}
 } // imr
