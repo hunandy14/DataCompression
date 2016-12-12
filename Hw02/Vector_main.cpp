@@ -17,7 +17,7 @@ using namespace imr;
 #define Pic_name_in "IMG.raw"
 #define Pic_name_out "IMG_OUT.raw"
 #define Origin "origin.raw"
-#define idxcode "idxcode.raw" 
+#define Idxcode "idxcode.raw" 
 #define Pic_x 256
 #define Pic_y 256
 
@@ -35,11 +35,11 @@ int main(int argc, char const *argv[]) {
     // 建立索引
     imgraw idx(ImrSize(64, 64));
     idx.get_idx(Pic_name_in, Origin);
-    idx.write(idxcode);
+    idx.write(Idxcode);
     //---------------------------------------------------------
     // 合併檔案還原
     imgraw img2(ImrSize(Pic_y, Pic_x));
-    img2.merge(Origin, idxcode);
+    img2.merge(Origin, Idxcode);
     //---------------------------------------------------------
     img2.info();
     img2.write(Pic_name_out);
