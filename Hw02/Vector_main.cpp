@@ -7,8 +7,8 @@ Final: 2016/10/13
 #include <iostream>
 #include <iomanip>
 #include "OpenRAW_fun\OpenRAW"
-// Visual Studio ½sÄ¶»İ§R°£¸Ó¦æ»P¸ÓÀÉ®×
-#include "Vector.cpp" // GCC³æÀÉ½sÄ¶¥Î
+// Visual Studio ç·¨è­¯éœ€åˆªé™¤è©²è¡Œèˆ‡è©²æª”æ¡ˆ
+#include "Vector.cpp" // GCCå–®æª”ç·¨è­¯ç”¨
 
 using namespace std;
 using namespace imr;
@@ -23,27 +23,27 @@ using namespace imr;
 
 void creat_ori(imgraw & img);
 int main(int argc, char const *argv[]) {
-    // ³Ğ«Øµe¥¬
+    // å‰µå»ºç•«å¸ƒ
     imgraw img(ImrSize(Pic_y, Pic_x));
     img.read(Pic_name_in);
     //---------------------------------------------------------
-    // «Ø¥ß½s½XÃ¯
+    // å»ºç«‹ç·¨ç¢¼ç°¿
     imgraw ori(ImrSize(64, 64));
     ori.get_org(Pic_name_in);
     ori.write(Origin);
     //---------------------------------------------------------
-    // «Ø¥ß¯Á¤Ş
-    // imgraw idx(ImrSize(64, 64));
-    // idx.get_idx(Pic_name_in, Origin);
-    // idx.write(Idxcode);
+    // å»ºç«‹ç´¢å¼•
+    imgraw idx(ImrSize(64, 64));
+    idx.get_idx(Pic_name_in, Origin);
+    idx.write(Idxcode);
     //---------------------------------------------------------
-    // ¦X¨ÖÀÉ®×ÁÙ­ì
+    // åˆä½µæª”æ¡ˆé‚„åŸ
     imgraw img2(ImrSize(Pic_y, Pic_x));
     img2.merge(Origin, Idxcode);
     img2.write(Pic_name_out);
     img2.info();
     //---------------------------------------------------------
-    // ¶}±ÒÀÉ®×
+    // é–‹å•Ÿæª”æ¡ˆ
     if(AutoOpen==1)
         system(Pic_name_out);
     return 0;

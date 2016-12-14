@@ -5,10 +5,15 @@ By   : CharlotteHonG
 Final: 2016/12/08
 *****************************************************************/
 namespace imr {
-imgraw::ImrBlock::ImrBlock(imgraw& img, imint pos){
-    this->pos_y=((pos/(img.high/4))*4);
-    this->pos_x=((pos%(img.width/4))*4);
+imgraw::ImrBlock::ImrBlock(){
     this->img_p.resize(16);
+}
+imgraw::ImrBlock::ImrBlock(imgraw& img, imint pos){
+    // 取得對應的 x, y 位置
+    imint pos_y=((pos/(img.high/4))*4);
+    imint pos_x=((pos%(img.width/4))*4);
+    this->img_p.resize(16);
+    // 存入參考
     for (int j=0, c=0; j < 4; ++j){
         for (int i = 0; i < 4; ++i){
             this->img_p[c++]=&img.at2d(j+pos_y, i+pos_x);
@@ -28,14 +33,23 @@ imch& imgraw::ImrBlock::operator[](const size_t __n){
 const imch& imgraw::ImrBlock::operator[](const size_t __n) const{
     return *(this->img_p[__n]);
 }
+// 複製實際地址參考到的內容物而不是只有地址
 void imgraw::ImrBlock::operator=(ImrBlock b){
-    for (int i = 0; i < 16; ++i){
-        *(this->img_p[i])=*(b.img_p[i]);
+    for (unsigned i = 0; i < this->img_p.size(); ++i){
+        *(this->img_p[i]) = *(b.img_p[i]);
     }
 }
-
+// 原本的等號功能
+// imgraw::ImrBlock& imgraw::ImrBlock::copy(ImrBlock&& b){
+//     this->img_p = b.img_p;
+//     return *this;
+// }
+imgraw::ImrBlock& imgraw::ImrBlock::copy(const ImrBlock& b){
+    this->img_p = b.img_p;
+    return *this;
+}
 // this的單一區塊與 img(ori)每個區塊比對
-int imgraw::ImrBlock::dif_squ(imgraw& img){
+imint imgraw::ImrBlock::dif_squ(imgraw& img){
     // 區塊點的 差平方和 算一次要存下來
     vector<long int> img_arr(256);
     long int num, min=-1;
@@ -43,7 +57,8 @@ int imgraw::ImrBlock::dif_squ(imgraw& img){
     // 比對 img 內的區塊，找出最小差平方和的位置
     for (int j = 0; j < 256; ++j, num=0){
         // 建立區塊
-        auto&& img_b=img.block(j);
+        // auto&& img_b=img.block(j);
+        auto&& img_b=img.blk_p[j];
         // 計算差平方和
         for (int i = 0; i < 16; ++i){
             num += pow(((int)(*this)[i]
