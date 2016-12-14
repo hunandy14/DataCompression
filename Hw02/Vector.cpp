@@ -63,14 +63,6 @@ void imgraw::get_org(string sou_name){
         }
     }
 }
-// 取得區塊預載
-void imgraw::get_block(){
-    this->blk_p.resize(256);
-    // blk_p 預載 256 個區塊
-    for (int i = 0; i < 256; ++i){
-        this->blk_p[i].copy(ImrBlock((*this), i));
-    }
-}
 // 取得索引
 void imgraw::get_idx(string sou_name, string ori_name){
     // 開圖檔
@@ -78,8 +70,6 @@ void imgraw::get_idx(string sou_name, string ori_name){
     sou.read(sou_name);
     imgraw ori(ImrSize(64, 64));
     ori.read(ori_name);
-    // 取得區塊預載
-    ori.get_block();
     // 找出最小平方差
     for (int i = 0; i < 4096; ++i){
         // sou的i區塊與ori每個區塊比對
@@ -100,6 +90,14 @@ void imgraw::merge(string ori_name, string idx_name){
     }
 }
 //----------------------------------------------------------------
+// 取得區塊預載
+void imgraw::get_block(){
+    this->blk_p.resize(256);
+    // blk_p 預載 256 個區塊
+    for (int i = 0; i < 256; ++i){
+        this->blk_p[i].copy(ImrBlock((*this), i));
+    }
+}
 // 複製區塊(這裡不能是參考，第一次創建)
 imgraw::ImrBlock imgraw::block(imint pos){
     return ImrBlock((*this), pos);

@@ -55,6 +55,10 @@ imint imgraw::ImrBlock::dif_squ(imgraw& img){
     // vector<long int> img_arr(256);
     long int num, min=-1;
     imint idx=0;
+    // 取得區塊預載
+    if(img.blk_p.size()==0){
+        img.get_block();
+    }
     // 比對 img 內的區塊，找出最小差平方和的位置
     for (int j = 0; j < 256; ++j, num=0){
         // 建立區塊
