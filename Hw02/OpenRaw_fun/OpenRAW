@@ -171,8 +171,8 @@ public:
     void info();
     imch& operator[](const size_t __n);
     const imch& operator[](const size_t __n) const;
-    void operator=(ImrBlock b);
-    ImrBlock& copy(const ImrBlock& b);
+    ImrBlock& operator=(const ImrBlock& obj);
+    ImrBlock& copy(const ImrBlock& obj);
     imint dif_squ(imgraw& img);
 private:
     vector<imch*> img_p;

@@ -33,25 +33,26 @@ imch& imgraw::ImrBlock::operator[](const size_t __n){
 const imch& imgraw::ImrBlock::operator[](const size_t __n) const{
     return *(this->img_p[__n]);
 }
-// 複製實際地址參考到的內容物而不是只有地址
-void imgraw::ImrBlock::operator=(ImrBlock b){
+// 複製實際地址參考到的內容物
+imgraw::ImrBlock& imgraw::ImrBlock::operator=(const ImrBlock& obj){
+    if (this == &obj)
+        return *this;
     for (unsigned i = 0; i < this->img_p.size(); ++i){
-        *(this->img_p[i]) = *(b.img_p[i]);
+        *(this->img_p[i]) = *(obj.img_p[i]);
     }
+    return *this;
 }
 // 原本的等號功能
-// imgraw::ImrBlock& imgraw::ImrBlock::copy(ImrBlock&& b){
-//     this->img_p = b.img_p;
-//     return *this;
-// }
-imgraw::ImrBlock& imgraw::ImrBlock::copy(const ImrBlock& b){
-    this->img_p = b.img_p;
+imgraw::ImrBlock& imgraw::ImrBlock::copy(const ImrBlock& obj){
+    if (this == &obj)
+        return *this;
+    this->img_p = obj.img_p;
     return *this;
 }
 // this的單一區塊與 img(ori)每個區塊比對
 imint imgraw::ImrBlock::dif_squ(imgraw& img){
     // 區塊點的 差平方和 算一次要存下來
-    vector<long int> img_arr(256);
+    // vector<long int> img_arr(256);
     long int num, min=-1;
     imint idx=0;
     // 比對 img 內的區塊，找出最小差平方和的位置
