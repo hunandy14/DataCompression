@@ -43,6 +43,9 @@ int main(int argc, char const *argv[]) {
     img2.write(Pic_name_out);
     img2.info();
     //---------------------------------------------------------
+    imgraw img3(ImrSize(Pic_y, Pic_x));
+    img3.merge("origin2.raw", Idxcode);
+    img3.write("IMG_OUT2.raw");
     // 開啟檔案
     if(AutoOpen==1)
         system(Pic_name_out);

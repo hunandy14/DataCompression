@@ -49,32 +49,47 @@ imgraw::ImrBlock& imgraw::ImrBlock::copy(const ImrBlock& obj){
     this->img_p = obj.img_p;
     return *this;
 }
+imgraw::ImrBlock imgraw::ImrBlock::operator+(const ImrBlock& obj){
+    ImrBlock temp;
+    for (unsigned i = 0; i < this->img_p.size(); ++i){
+        // 這裡會超出範圍
+        *temp.img_p[i] = 
+            *this->img_p[i] + *obj.img_p[i];
+    }
+    return temp;
+}
+
+
 // this的單一區塊與 img(ori)每個區塊比對
 imint imgraw::ImrBlock::dif_squ(imgraw& img){
     // 區塊點的 差平方和 算一次要存下來
-    // vector<long int> img_arr(256);
-    long int num, min=-1;
+    
+    // 最像的位置索引
     imint idx=0;
     // 取得區塊預載
     if(img.blk_p.size()==0){
         img.get_block();
     }
     // 比對 img 內的區塊，找出最小差平方和的位置
-    for (int j = 0; j < 256; ++j, num=0){
+    long long int min=-1;
+    for (int j = 0; j < 256; ++j){
+        long int temp= 0;
         // 建立區塊
         // auto&& img_b=img.block(j);
-        auto&& img_b=img.blk_p[j];
+        auto&& img_b= img.blk_p[j];
         // 計算差平方和
         for (int i = 0; i < 16; ++i){
-            num += pow(((int)(*this)[i]
+            temp += pow(((int)(*this)[i]
                 - (int)img_b[i]), 2);
         }
         // 找 差平方和 最小的位置
-        if(num < min or min==-1){
-            min=num;
-            idx=j;
+        if(temp < min or min==-1){
+            min= temp;
+            idx= j;
         }
     }
+    // 累加差平方和
+    img.min_sum+=min;
     return idx;
 }
 } // imr
