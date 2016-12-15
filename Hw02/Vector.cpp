@@ -77,7 +77,7 @@ void imgraw::get_idx(string sou_name, string ori_name){
     // 預載區塊
     sou.get_block();
     tra.get_block();
-    // 找出最小平方差(原圖個別找一次)
+    // 找出最小 差平方和 並返還編碼簿索引
     for (int i = 0; i < 4096; ++i){
         // sou的i區塊與ori每個區塊比對
         (*this)[i]=(imch)sou.block(i).dif_squ(ori);
@@ -88,60 +88,44 @@ void imgraw::get_idx(string sou_name, string ori_name){
         // 找索引j的位置在哪裡並求 ori[i]和
         long long int sum[16]{};
         vector<imint> sum_idx;
+        imint cnt=0;
         // 找出相同的 j 有幾個並累加 block
         for (int i = 0; i < 4096; ++i){ // idx的索引
             if ((*this)[i]==j){
+                ++cnt;
                 // 每個區塊16個點個別累加
-                sum_idx.push_back(i);
                 for (int k = 0; k < 16; ++k){
                     sum[k] += sou.blk_p[i][k];
                 }
-                // cout << j << "=" << i << endl;
-                // cout << "  sum=" << sum[0] << endl;
             }
         }
         // 根據找出的算出平均數並填入tra
-        if (sum_idx.size() != 0){
-            // cout << "sum_idx.size()=" << sum_idx.size() << endl;
+        if (cnt != 0){
             // 算出平均
             for (int i = 0; i < 16; ++i){
-                sum[i] = sum[i]/sum_idx.size();
+                sum[i] = sum[i]/cnt;
             }
             // 把紀錄的總和平均後填入n個tra[idx]
-            for (unsigned i = 0; i < sum_idx.size(); ++i){
-                // imint idx=sum_idx[i];
-                // cout << "idx=" << idx << endl;
+            for (unsigned i = 0; i < cnt; ++i){
                 for (int k = 0; k < 16; ++k){
                     tra.blk_p[j][k]=(imch)sum[k];
-                    // tra.blk_p[199][k];
-                    // (imch)sum[k];
                 }
             }
         }
     }
-    // 找出最小平方差(原圖個別找一次)
+    // 找出最小平方差並返還編碼簿索引
     for (int i = 0; i < 4096; ++i){
         // sou的i區塊與ori每個區塊比對
         (*this)[i]=(imch)sou.block(i).dif_squ(tra);
     }tra.min_sum /= 4096;
 
-
-
-    
     // 256個`差平方和`的和
-    cout << "min_sum=" << ori.min_sum << endl;
-    cout << "min_sum=" << tra.min_sum << endl;
+    // cout << "min_sum=" << ori.min_sum << endl;
+    // cout << "min_sum=" << tra.min_sum << endl;
 
     tra.write("origin2.raw");
 
 }
-void codebook_avg(){
-
-}
-
-
-
-
 // 合併檔案
 void imgraw::merge(string ori_name, string idx_name){
     ImrSize size(64, 64);
@@ -159,7 +143,7 @@ void imgraw::merge(string ori_name, string idx_name){
 // 取得區塊預載
 void imgraw::get_block(){
     imint len = (this->width/4)*(this->high/4);
-    cout << "len=" << len << endl;
+    // cout << "len=" << len << endl;
     this->blk_p.resize(len);
     // blk_p 預載 len 個區塊
     for (unsigned i = 0; i < len; ++i){

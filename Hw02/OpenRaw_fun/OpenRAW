@@ -128,10 +128,10 @@ public:
     // 新增的
     // 取得區塊
     void get_block();
-    // 取得索引
-    void get_idx(string sou_name, string ori_name);
     // 取得初始編碼簿
     void get_org(string sou_name);
+    // 取得索引
+    void get_idx(string sou_name, string ori_name);
     // 合併檔案
     void merge(string ori_name, string idx_name);
     // 取亂數
@@ -151,7 +151,6 @@ private:
     // 新增的
     class ImrBlock;
     vector<ImrBlock> blk_p;
-    void codebook_avg();
 public:
     ImrBlock block(imint pos);
     long long int min_sum;
@@ -175,7 +174,6 @@ public:
     const imch& operator[](const size_t __n) const;
     ImrBlock& operator=(const ImrBlock& obj);
     ImrBlock& copy(const ImrBlock& obj);
-    ImrBlock operator+(const ImrBlock& obj);
     imint dif_squ(imgraw& img);
 private:
     vector<imch*> img_p;
