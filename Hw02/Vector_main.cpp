@@ -2,7 +2,7 @@
 Name : OpenRAW_main
 Date : 2016/08/03
 By   : CharlotteHonG
-Final: 2016/10/13
+Final: 2016/12/15
 **********************************************************/
 #include <iostream>
 #include <iomanip>

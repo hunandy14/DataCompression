@@ -2,7 +2,7 @@
 Name : OpenRaw 2.5.2
 Date : 2016/08/03
 By   : CharlotteHonG
-Final: 2016/10/05
+Final: 2016/12/15
 **********************************************************/
 #ifndef OPENRAW_CPP
 #define OPENRAW_CPP
@@ -58,8 +58,7 @@ void imgraw::get_org(string sou_name){
         }
         // 發現已經找過跳過一個
         else{
-            // 補回這次浪費的步數
-            --i;
+            --i;// 補回這次浪費的步數
         }
     }
 }
