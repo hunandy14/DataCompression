@@ -37,6 +37,10 @@ int main(int argc, char const *argv[]) {
     idx.get_idx(Pic_name_in, Origin);
     idx.write(Idxcode);
     //---------------------------------------------------------
+    // 訓練編碼簿
+    imgraw tra(ImrSize(64, 64));
+    // idx.get_idx(Pic_name_in, Origin);
+    //---------------------------------------------------------
     // 合併檔案還原
     imgraw img2(ImrSize(Pic_y, Pic_x));
     img2.merge(Origin, Idxcode);

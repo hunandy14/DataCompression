@@ -124,6 +124,9 @@ void imgraw::get_idx(string sou_name, string ori_name){
     // cout << "min_sum=" << tra.min_sum << endl;
 
     tra.write("origin2.raw");
+}
+// 訓練編碼簿
+void get_con(string sou_name, string ori_name, string idx_name){
 
 }
 // 合併檔案
