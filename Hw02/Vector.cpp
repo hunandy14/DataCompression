@@ -109,7 +109,7 @@ double imgraw::tra_code(imgraw& sou, imgraw& idx){
     idx.get_idx(sou, (*this));
     // `差平方和`的和平均 差值
     // cout << avg_ori-idx.min_avg << endl;
-    return avg_ori-idx.min_avg;
+    return abs(avg_ori-idx.min_avg);
 }
 // 合併檔案
 imgraw & imgraw::merge(imgraw& cb, imgraw& idx){
