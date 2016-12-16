@@ -28,21 +28,20 @@ int main(int argc, char const *argv[]) {
     imgraw img(size), sou(size);
     imgraw ori(size2), tra(size2), idx(size2);
     sou.read(Pic_name_in);
+    //---------------------------------------------------------
     // 建立編碼簿
     ori.get_org(sou);
     ori.write(Origin);
-    //---------------------------------------------------------
     // 建立索引
     idx.get_idx(sou, ori);
     idx.write(Idxcode);
     // 輸出第一次的圖檔
-    img.merge(Origin, Idxcode).write(Pic_name_out);
-    // 訓練編碼簿
-    idx.tra_code(sou, tra, "ori1.raw", "idx1.raw");
-    img.merge("ori1.raw", "idx1.raw").write("IMG_tra1.raw");
-    //---------------------------------------------------------
-    // 合併檔案還原
-    // img.merge(Origin, Idxcode).write(Pic_name_out);
+    img.merge(ori, idx).write(Pic_name_out);
+    // 訓練編碼簿 
+    tra.tra_code(sou, idx);
+    tra.write("ori1.raw");
+    idx.write("idx1.raw");
+    // img.merge(tra, idx).write("IMG_tra1.raw");
     //---------------------------------------------------------
     // 開啟檔案
     if(AutoOpen==1)

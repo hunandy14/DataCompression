@@ -129,9 +129,8 @@ public:
     void get_block();// 取得區塊
     imgraw & get_org(imgraw& sou);// 取得初始編碼簿
     double get_idx(imgraw& sou, imgraw& ori);// 取得索引
-    double tra_code(imgraw& sou, imgraw& ori, 
-        string tra_name, string idx_name);// 訓練編碼簿
-    imgraw & merge(string ori_name, string idx_name);// 合併檔案
+    imgraw tra_code(imgraw& sou, imgraw& idx);// 訓練編碼簿
+    imgraw & merge(imgraw& cb, imgraw& idx);// 合併檔案
 private:
     ifstream::pos_type filesize;
     string filename;

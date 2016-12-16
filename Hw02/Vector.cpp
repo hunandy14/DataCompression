@@ -72,12 +72,11 @@ double imgraw::get_idx(imgraw& sou, imgraw& ori){
     return this->min_avg;
 }
 // 訓練編碼簿(返回訓練前後的差值)
-double imgraw::tra_code(imgraw& sou, imgraw& ori, 
-    string tra_name, string idx_name){
-    imgraw tra(ImrSize(64, 64));
+imgraw imgraw::tra_code(imgraw& sou, imgraw& idx){
+    imgraw tra1(ImrSize(64, 64));
     // 預載區塊
     sou.get_block();
-    tra.get_block();
+    (*this).get_block();
     // 平均(把sou[i]平均 後寫入tra[i])
     for (int j = 0; j < 256; ++j){ // idx索引上的編號
         // 找種類 j的位置在哪裡並求 sou[i]和
@@ -85,7 +84,7 @@ double imgraw::tra_code(imgraw& sou, imgraw& ori,
         imint cnt=0;
         // 找出相同的 j有幾個並累加 block
         for (int i = 0; i < 4096; ++i){ // idx的索引
-            if ((*this)[i]==j){
+            if (idx[i]==j){
                 ++cnt;
                 // 每個區塊16個點個別累加
                 for (int k = 0; k < 16; ++k)
@@ -100,31 +99,20 @@ double imgraw::tra_code(imgraw& sou, imgraw& ori,
             // 把紀錄的總和平均後，填入tra[idx]
             for (unsigned i = 0; i < cnt; ++i)
                 for (int k = 0; k < 16; ++k)
-                    tra.blk_p[j][k]=(imch)sum[k];
+                    (*this).blk_p[j][k]=(imch)sum[k];
         }
     }
     // 4096個 `差平方和`的和平均
-    double avg_ori = this->min_avg;
+    // double avg_ori = idx.min_avg;
     // 重新創建idx
-    this->get_idx(sou, tra);
-    
-    tra.write(tra_name);
-    this->write(idx_name);
-
-    return avg_ori-(this->min_avg);
+    idx.get_idx(sou, (*this));
+    return (*this);
 }
 // 合併檔案
-imgraw & imgraw::merge(string ori_name, string idx_name){
-    ImrSize size(64, 64);
-    // 開圖檔
-    imgraw ori(size);
-    ori.read(ori_name);
-    imgraw idx(size);
-    idx.read(idx_name);
+imgraw & imgraw::merge(imgraw& cb, imgraw& idx){
     // 寫入檔案
-    for (int j= 0, c =0; j < 4096; ++j){
-        this->block(j) = ori.block(idx[c++]);
-    }
+    for (int j= 0, c =0; j < 4096; ++j)
+        this->block(j) = cb.block(idx[c++]);
     return *this;
 }
 //----------------------------------------------------------------
