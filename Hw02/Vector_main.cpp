@@ -23,10 +23,6 @@ using namespace imr;
 
 void creat_ori(imgraw & img);
 int main(int argc, char const *argv[]) {
-    // 創建畫布
-    imgraw img(ImrSize(Pic_y, Pic_x));
-    img.read(Pic_name_in);
-    //---------------------------------------------------------
     // 建立編碼簿
     imgraw ori(ImrSize(64, 64));
     ori.get_org(Pic_name_in);
@@ -37,19 +33,29 @@ int main(int argc, char const *argv[]) {
     idx.get_idx(Pic_name_in, Origin);
     idx.write(Idxcode);
     //---------------------------------------------------------
+    // 合併檔案還原
+    imgraw img(ImrSize(Pic_y, Pic_x));
+    img.merge(Origin, Idxcode);
+    img.write(Pic_name_out);
+    //---------------------------------------------------------
     // 訓練編碼簿
     imgraw tra(ImrSize(64, 64));
-    // idx.get_idx(Pic_name_in, Origin);
+    tra.get_con(Pic_name_in, Origin, Idxcode);
+    tra.write("tra1.raw");
+
+    idx.get_idx(Pic_name_in, "tra1.raw");
+    idx.write(Idxcode);
+    
+    imgraw img1(ImrSize(Pic_y, Pic_x));
+    img1.merge("tra1.raw", Idxcode);
+    img1.write("IMG_OUT1.raw");
     //---------------------------------------------------------
-    // 合併檔案還原
+    imgraw tra2(ImrSize(64, 64));
+    tra2.get_con(Pic_name_in, "tra1.raw", Idxcode);
+    tra2.write("tra2.raw");
     imgraw img2(ImrSize(Pic_y, Pic_x));
-    img2.merge(Origin, Idxcode);
-    img2.write(Pic_name_out);
-    img2.info();
-    //---------------------------------------------------------
-    imgraw img3(ImrSize(Pic_y, Pic_x));
-    img3.merge("origin2.raw", Idxcode);
-    img3.write("IMG_OUT2.raw");
+    img2.merge("tra2.raw", Idxcode);
+    img2.write("IMG_OUT2.raw");
     // 開啟檔案
     if(AutoOpen==1)
         system(Pic_name_out);

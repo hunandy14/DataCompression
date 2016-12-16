@@ -69,28 +69,36 @@ void imgraw::get_idx(string sou_name, string ori_name){
     sou.read(sou_name);
     imgraw ori(ImrSize(64, 64));
     ori.read(ori_name);
-    imgraw tra(ImrSize(64, 64));
-    // 區塊的`最小差平方和`的和
+    // 區塊的`最小差平方和`的和歸零
     ori.min_sum = 0;
-    tra.min_sum = 0;
-    // 預載區塊
-    sou.get_block();
-    tra.get_block();
     // 找出最小 差平方和 並返還編碼簿索引
     for (int i = 0; i < 4096; ++i){
         // sou的i區塊與ori每個區塊比對
         (*this)[i]=(imch)sou.block(i).dif_squ(ori);
     }ori.min_sum /= 4096;
-
-    // 平均(把ori[i]頻均 後寫入tra[i])
+    // 256個`差平方和`的和
+    cout << "min_sum=" << ori.min_sum << endl;
+}
+// 訓練編碼簿
+void imgraw::get_con(string sou_name, string ori_name, string idx_name){
+    // 開圖檔
+    imgraw sou(ImrSize(256, 256));
+    sou.read(sou_name);
+    imgraw ori(ImrSize(64, 64));
+    ori.read(ori_name);
+    imgraw idx(ImrSize(64, 64));
+    idx.read(idx_name);
+    // 預載區塊
+    sou.get_block();
+    this->get_block();
+    // 平均(把sou[i]頻均 後寫入tra[i])
     for (int j = 0; j < 256; ++j){ // idx索引上的編號
         // 找索引j的位置在哪裡並求 ori[i]和
         long long int sum[16]{};
-        vector<imint> sum_idx;
         imint cnt=0;
         // 找出相同的 j 有幾個並累加 block
         for (int i = 0; i < 4096; ++i){ // idx的索引
-            if ((*this)[i]==j){
+            if (idx[i]==j){
                 ++cnt;
                 // 每個區塊16個點個別累加
                 for (int k = 0; k < 16; ++k){
@@ -107,26 +115,22 @@ void imgraw::get_idx(string sou_name, string ori_name){
             // 把紀錄的總和平均後填入n個tra[idx]
             for (unsigned i = 0; i < cnt; ++i){
                 for (int k = 0; k < 16; ++k){
-                    tra.blk_p[j][k]=(imch)sum[k];
+                    this->blk_p[j][k]=(imch)sum[k];
                 }
             }
         }
     }
-    // 找出最小平方差並返還編碼簿索引
+    // 區塊的`最小差平方和`的和歸零
+    this->min_sum = 0;
+    // // 找出最小平方差並返還編碼簿索引
     for (int i = 0; i < 4096; ++i){
         // sou的i區塊與ori每個區塊比對
-        (*this)[i]=(imch)sou.block(i).dif_squ(tra);
-    }tra.min_sum /= 4096;
+        idx[i]=(imch)sou.block(i).dif_squ(*this);
+    }this->min_sum /= 4096;
 
     // 256個`差平方和`的和
-    // cout << "min_sum=" << ori.min_sum << endl;
-    // cout << "min_sum=" << tra.min_sum << endl;
-
-    tra.write("origin2.raw");
-}
-// 訓練編碼簿
-void get_con(string sou_name, string ori_name, string idx_name){
-
+    cout << "min_sum=" << ori.min_sum << endl;
+    cout << "min_sum=" << this->min_sum << endl;
 }
 // 合併檔案
 void imgraw::merge(string ori_name, string idx_name){
