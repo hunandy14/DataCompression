@@ -72,53 +72,42 @@ double imgraw::get_idx(imgraw& sou, imgraw& ori){
     return this->min_avg;
 }
 // 訓練編碼簿(返回訓練前後的差值)
-double imgraw::tra_code(string sou_name, string ori_name, 
+double imgraw::tra_code(imgraw& sou, imgraw& ori, 
     string tra_name, string idx_name){
-    // 開圖檔
-    imgraw sou(ImrSize(256, 256));
-    sou.read(sou_name);
-    imgraw ori(ImrSize(64, 64));
-    ori.read(ori_name);
     imgraw tra(ImrSize(64, 64));
     // 預載區塊
     sou.get_block();
     tra.get_block();
-    // 平均(把ori[i]頻均 後寫入tra[i])
+    // 平均(把sou[i]平均 後寫入tra[i])
     for (int j = 0; j < 256; ++j){ // idx索引上的編號
-        // 找索引j的位置在哪裡並求 ori[i]和
+        // 找種類 j的位置在哪裡並求 sou[i]和
         long long int sum[16]{};
-        vector<imint> sum_idx;
         imint cnt=0;
-        // 找出相同的 j 有幾個並累加 block
+        // 找出相同的 j有幾個並累加 block
         for (int i = 0; i < 4096; ++i){ // idx的索引
             if ((*this)[i]==j){
                 ++cnt;
                 // 每個區塊16個點個別累加
-                for (int k = 0; k < 16; ++k){
+                for (int k = 0; k < 16; ++k)
                     sum[k] += sou.blk_p[i][k];
-                }
             }
         }
-        // 根據找出的算出平均數並填入tra
+        // 根據找出的數，算出平均數並填入tra
         if (cnt != 0){
             // 算出平均
-            for (int i = 0; i < 16; ++i){
+            for (int i = 0; i < 16; ++i)
                 sum[i] = sum[i]/cnt;
-            }
-            // 把紀錄的總和平均後填入n個tra[idx]
-            for (unsigned i = 0; i < cnt; ++i){
-                for (int k = 0; k < 16; ++k){
+            // 把紀錄的總和平均後，填入tra[idx]
+            for (unsigned i = 0; i < cnt; ++i)
+                for (int k = 0; k < 16; ++k)
                     tra.blk_p[j][k]=(imch)sum[k];
-                }
-            }
         }
     }
     // 4096個 `差平方和`的和平均
     double avg_ori = this->min_avg;
     // 重新創建idx
     this->get_idx(sou, tra);
-
-
+    
     tra.write(tra_name);
     this->write(idx_name);
 

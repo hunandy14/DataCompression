@@ -16,8 +16,8 @@ using namespace imr;
 #define AutoOpen 0
 #define Pic_name_in "IMG.raw"
 #define Pic_name_out "IMG_OUT.raw"
-#define Origin "origin.raw"
-#define Idxcode "idxcode.raw" 
+#define Origin "ori.raw"
+#define Idxcode "idx.raw" 
 #define Pic_x 256
 #define Pic_y 256
 
@@ -29,7 +29,8 @@ int main(int argc, char const *argv[]) {
     imgraw ori(size2), tra(size2), idx(size2);
     sou.read(Pic_name_in);
     // 建立編碼簿
-    ori.get_org(sou).write(Origin);
+    ori.get_org(sou);
+    ori.write(Origin);
     //---------------------------------------------------------
     // 建立索引
     idx.get_idx(sou, ori);
@@ -37,8 +38,8 @@ int main(int argc, char const *argv[]) {
     // 輸出第一次的圖檔
     img.merge(Origin, Idxcode).write(Pic_name_out);
     // 訓練編碼簿
-    idx.tra_code(Pic_name_in, Origin, "tra.raw", "idx.raw");
-    img.merge("tra.raw", "idx.raw").write("IMG_tra.raw");
+    idx.tra_code(sou, tra, "ori1.raw", "idx1.raw");
+    img.merge("ori1.raw", "idx1.raw").write("IMG_tra1.raw");
     //---------------------------------------------------------
     // 合併檔案還原
     // img.merge(Origin, Idxcode).write(Pic_name_out);
