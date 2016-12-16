@@ -23,23 +23,25 @@ using namespace imr;
 
 void creat_ori(imgraw & img);
 int main(int argc, char const *argv[]) {
+    // 開圖檔
+    ImrSize size(Pic_y, Pic_x), size2(64, 64);
+    imgraw img(size), sou(size);
+    imgraw ori(size2), tra(size2), idx(size2);
+    sou.read(Pic_name_in);
     // 建立編碼簿
-    imgraw ori(ImrSize(64, 64));
-    ori.get_org(Pic_name_in);
-    ori.write(Origin);
+    ori.get_org(sou).write(Origin);
     //---------------------------------------------------------
     // 建立索引
-    imgraw idx(ImrSize(64, 64));
-    idx.get_idx(Pic_name_in, Origin);
+    idx.get_idx(sou, ori);
     idx.write(Idxcode);
+    // 輸出第一次的圖檔
+    img.merge(Origin, Idxcode).write(Pic_name_out);
     // 訓練編碼簿
-    imgraw tra(ImrSize(64, 64));
-    tra.get_con(Pic_name_in, Origin, Idxcode);
+    idx.tra_code(Pic_name_in, Origin, "tra.raw", "idx.raw");
+    img.merge("tra.raw", "idx.raw").write("IMG_tra.raw");
     //---------------------------------------------------------
     // 合併檔案還原
-    imgraw img(ImrSize(Pic_y, Pic_x));
-    img.merge(Origin, Idxcode);
-    img.write(Pic_name_out);
+    // img.merge(Origin, Idxcode).write(Pic_name_out);
     //---------------------------------------------------------
     // 開啟檔案
     if(AutoOpen==1)

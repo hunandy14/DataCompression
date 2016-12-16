@@ -41,12 +41,8 @@ namespace imr {
 namespace imr {
 //----------------------------------------------------------------
 // 初始編碼簿 - 隨機取得
-void imgraw::get_org(string sou_name){
+imgraw & imgraw::get_org(imgraw& sou){
     srand((unsigned)time(NULL));
-    // 讀檔
-    ImrSize size(256, 256);
-    imgraw sou(size);
-    sou.read(sou_name);
     // 隨機找256個點寫入1
     vector<imint> arr(4096);
     for (int i = 0; i < 256; ++i){
@@ -61,48 +57,41 @@ void imgraw::get_org(string sou_name){
             --i;// 補回這次浪費的步數
         }
     }
+    return (*this);
 }
-// 取得索引
-double imgraw::get_idx(string sou_name, string ori_name){
-    // 開圖檔
-    imgraw sou(ImrSize(256, 256));
-    sou.read(sou_name);
-    imgraw ori(ImrSize(64, 64));
-    ori.read(ori_name);
-    // 區塊的`最小差平方和`的和歸零
-    ori.min_sum = 0;
+// 取得索引(返回 `差平方和`的和平均)
+double imgraw::get_idx(imgraw& sou, imgraw& ori){
     // 找出最小 差平方和 並返還編碼簿索引
+    ori.min_sum = 0;// 區塊的`最小差平方和`的和歸零
     for (int i = 0; i < 4096; ++i){
         // sou的i區塊與ori每個區塊比對
         (*this)[i]=(imch)sou.block(i).dif_squ(ori);
     } this->min_avg= (double)ori.min_sum / (double)4096;
-    // 4096個 `差平方和`的和
+    // 4096個 `差平方和`的和平均
     cout << "min_avg=" << this->min_avg << endl;
     return this->min_avg;
 }
-// 訓練編碼簿
-void imgraw::get_con(string sou_name, string ori_name, string idx_name){
+// 訓練編碼簿(返回訓練前後的差值)
+double imgraw::tra_code(string sou_name, string ori_name, 
+    string tra_name, string idx_name){
     // 開圖檔
     imgraw sou(ImrSize(256, 256));
     sou.read(sou_name);
     imgraw ori(ImrSize(64, 64));
     ori.read(ori_name);
-    imgraw idx(ImrSize(64, 64));
-    idx.read(idx_name);
-    
     imgraw tra(ImrSize(64, 64));
     // 預載區塊
     sou.get_block();
-    this->get_block();
     tra.get_block();
-    // 平均(把sou[i]頻均 後寫入tra[i])
+    // 平均(把ori[i]頻均 後寫入tra[i])
     for (int j = 0; j < 256; ++j){ // idx索引上的編號
-        // 找索引j的位置在哪裡並求 sou[i]和
+        // 找索引j的位置在哪裡並求 ori[i]和
         long long int sum[16]{};
+        vector<imint> sum_idx;
         imint cnt=0;
         // 找出相同的 j 有幾個並累加 block
         for (int i = 0; i < 4096; ++i){ // idx的索引
-            if (idx[i]==j){
+            if ((*this)[i]==j){
                 ++cnt;
                 // 每個區塊16個點個別累加
                 for (int k = 0; k < 16; ++k){
@@ -119,25 +108,24 @@ void imgraw::get_con(string sou_name, string ori_name, string idx_name){
             // 把紀錄的總和平均後填入n個tra[idx]
             for (unsigned i = 0; i < cnt; ++i){
                 for (int k = 0; k < 16; ++k){
-                    this->blk_p[j][k]=(imch)sum[k];
+                    tra.blk_p[j][k]=(imch)sum[k];
                 }
             }
         }
     }
-    // 區塊的`最小差平方和`的和歸零
-    this->min_sum = 0;
-    // // 找出最小平方差並返還編碼簿索引
-    for (int i = 0; i < 4096; ++i){
-        // sou的i區塊與ori每個區塊比對
-        idx[i]=(imch)sou.block(i).dif_squ(*this);
-    }this->min_sum /= 4096;
+    // 4096個 `差平方和`的和平均
+    double avg_ori = this->min_avg;
+    // 重新創建idx
+    this->get_idx(sou, tra);
 
-    // 256個`差平方和`的和
-    cout << "min_sum=" << ori.min_sum << endl;
-    cout << "min_sum=" << this->min_sum << endl;
+
+    tra.write(tra_name);
+    this->write(idx_name);
+
+    return avg_ori-(this->min_avg);
 }
 // 合併檔案
-void imgraw::merge(string ori_name, string idx_name){
+imgraw & imgraw::merge(string ori_name, string idx_name){
     ImrSize size(64, 64);
     // 開圖檔
     imgraw ori(size);
@@ -148,6 +136,7 @@ void imgraw::merge(string ori_name, string idx_name){
     for (int j= 0, c =0; j < 4096; ++j){
         this->block(j) = ori.block(idx[c++]);
     }
+    return *this;
 }
 //----------------------------------------------------------------
 // 取得區塊預載
