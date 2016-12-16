@@ -131,7 +131,7 @@ public:
     // 取得初始編碼簿
     void get_org(string sou_name);
     // 取得索引
-    void get_idx(string sou_name, string ori_name);
+    double get_idx(string sou_name, string ori_name);
     // 訓練編碼簿
     void get_con(string sou_name, string ori_name, string idx_name);
     // 合併檔案
@@ -156,6 +156,7 @@ private:
 public:
     ImrBlock block(imint pos);
     long long int min_sum;
+    double min_avg;
 };
 /*
      ######                     ######    ###                       ##

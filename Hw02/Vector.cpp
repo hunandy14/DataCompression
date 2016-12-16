@@ -63,7 +63,7 @@ void imgraw::get_org(string sou_name){
     }
 }
 // 取得索引
-void imgraw::get_idx(string sou_name, string ori_name){
+double imgraw::get_idx(string sou_name, string ori_name){
     // 開圖檔
     imgraw sou(ImrSize(256, 256));
     sou.read(sou_name);
@@ -75,9 +75,10 @@ void imgraw::get_idx(string sou_name, string ori_name){
     for (int i = 0; i < 4096; ++i){
         // sou的i區塊與ori每個區塊比對
         (*this)[i]=(imch)sou.block(i).dif_squ(ori);
-    }ori.min_sum /= 4096;
-    // 256個`差平方和`的和
-    cout << "min_sum=" << ori.min_sum << endl;
+    } this->min_avg= (double)ori.min_sum / (double)4096;
+    // 4096個 `差平方和`的和
+    cout << "min_avg=" << this->min_avg << endl;
+    return this->min_avg;
 }
 // 訓練編碼簿
 void imgraw::get_con(string sou_name, string ori_name, string idx_name){
@@ -88,12 +89,15 @@ void imgraw::get_con(string sou_name, string ori_name, string idx_name){
     ori.read(ori_name);
     imgraw idx(ImrSize(64, 64));
     idx.read(idx_name);
+    
+    imgraw tra(ImrSize(64, 64));
     // 預載區塊
     sou.get_block();
     this->get_block();
+    tra.get_block();
     // 平均(把sou[i]頻均 後寫入tra[i])
     for (int j = 0; j < 256; ++j){ // idx索引上的編號
-        // 找索引j的位置在哪裡並求 ori[i]和
+        // 找索引j的位置在哪裡並求 sou[i]和
         long long int sum[16]{};
         imint cnt=0;
         // 找出相同的 j 有幾個並累加 block

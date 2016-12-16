@@ -32,30 +32,15 @@ int main(int argc, char const *argv[]) {
     imgraw idx(ImrSize(64, 64));
     idx.get_idx(Pic_name_in, Origin);
     idx.write(Idxcode);
+    // 訓練編碼簿
+    imgraw tra(ImrSize(64, 64));
+    tra.get_con(Pic_name_in, Origin, Idxcode);
     //---------------------------------------------------------
     // 合併檔案還原
     imgraw img(ImrSize(Pic_y, Pic_x));
     img.merge(Origin, Idxcode);
     img.write(Pic_name_out);
     //---------------------------------------------------------
-    // 訓練編碼簿
-    imgraw tra(ImrSize(64, 64));
-    tra.get_con(Pic_name_in, Origin, Idxcode);
-    tra.write("tra1.raw");
-
-    idx.get_idx(Pic_name_in, "tra1.raw");
-    idx.write(Idxcode);
-    
-    imgraw img1(ImrSize(Pic_y, Pic_x));
-    img1.merge("tra1.raw", Idxcode);
-    img1.write("IMG_OUT1.raw");
-    //---------------------------------------------------------
-    imgraw tra2(ImrSize(64, 64));
-    tra2.get_con(Pic_name_in, "tra1.raw", Idxcode);
-    tra2.write("tra2.raw");
-    imgraw img2(ImrSize(Pic_y, Pic_x));
-    img2.merge("tra2.raw", Idxcode);
-    img2.write("IMG_OUT2.raw");
     // 開啟檔案
     if(AutoOpen==1)
         system(Pic_name_out);

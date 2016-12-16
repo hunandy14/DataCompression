@@ -52,6 +52,7 @@ imgraw::ImrBlock& imgraw::ImrBlock::copy(const ImrBlock& obj){
 // this(sou)的單一區塊與 img(ori)每個區塊比對
 imint imgraw::ImrBlock::dif_squ(imgraw& img){
     imint Sidelen = sqrt(BlkSize);
+    //img(ori) 有幾個區塊(4096)
     imint len = (img.width/Sidelen) * (img.high/Sidelen);
     // 最像的位置索引
     imint idx=0;
