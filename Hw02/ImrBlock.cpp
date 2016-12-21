@@ -54,6 +54,7 @@ imint imgraw::ImrBlock::dif_squ(imgraw& img){
     imint Sidelen = sqrt(BlkSize);
     //img(ori) 有幾個區塊(4096)
     imint len = (img.width/Sidelen) * (img.high/Sidelen);
+    // cout << "len=" << len << endl;
     // 最像的位置索引
     imint idx=0;
     // 取得區塊預載

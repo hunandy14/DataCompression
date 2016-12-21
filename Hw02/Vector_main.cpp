@@ -31,12 +31,13 @@ int main(int argc, char const *argv[]) {
     // 輸出第一次的圖檔
     img.merge(ori, idx).write(IMG_OUT);
     // 訓練編碼簿
-    for (int i = 0; i < 999; ++i){
+    for (int i = 0; i < 99; ++i){
         double temp = tra.tra_code(sou, idx);
         cout << "[" << setw(2) << i << "] = " << temp << endl;
         if (temp <= 0.01)
             break;
     }tra.write("tra.raw");
+
     img.merge(tra, idx).write("IMG_tra.raw");
     //---------------------------------------------------------
     // 開啟檔案
