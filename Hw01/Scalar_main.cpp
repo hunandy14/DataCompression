@@ -17,7 +17,7 @@ using namespace imr;
 #define Pic_name_out "IMG_OUT.raw"
 #define Pic_x 256
 #define Pic_y 256
-#define comp_bit 2
+#define comp_bit 3
 
 int main(int argc, char const *argv[]) {
     // ³Ð«Øµe¥¬

@@ -79,12 +79,6 @@ namespace imr{
         this->high = y;
         this->img_data.vector::resize(x*y);
     }
-    void imgraw::resize_canvas(imint filesize) {
-        this->filesize = (ifstream::pos_type)filesize;
-        this->width = 0;
-        this->high = 0;
-        this->img_data.vector::resize(filesize);
-    }
     // Àò±o¼e
     imint imgraw::w() {
         return this->width;
