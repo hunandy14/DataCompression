@@ -128,6 +128,7 @@ namespace imr{
     public:
         void scalar(imint size);
         void unscalar(imint size);
+        void resize_canvas(imint filesize);
     private:
         ifstream::pos_type filesize;
         string filename;
