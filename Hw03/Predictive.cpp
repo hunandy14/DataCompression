@@ -36,6 +36,62 @@ Final: 2016/10/05
 //=========================================================
 namespace imr{
 #define byte 8
+void imgraw::code(){
+    cout << (int)this->vec(255) << endl;
+    for (int i = 0; i < 8; ++i){
+        cout << (int)this->uvec(i) << ", ";
+    }
+    const size_t size=3;
+    imgraw img_c(ImrSize(0, 0));
+    imint new_size = ceil((this->filesize*size)/byte);
+    // imint ori_size = this->filesize;
+    img_c.resize_canvas(new_size);
+    // 旗標
+    int img_idx=0, bit_idx=0;
+    // bit暫存
+    bitset<byte> bit;
+    // 讀取每個點
+    // for (int i = 0; i < (int)ori_size; ++i){
+    for (int i = 0; i < (int)3; ++i){
+        // cout << "(*this)[i]=" << (bitset<byte>)((*this)[i]) << endl;
+        // 讀取位元
+        for (unsigned j = 0; j < size; ++j){
+            // bit[bit_idx] = ((bitset<byte>)(((*this)[i])))[j];
+            bit[bit_idx] = ((bitset<byte>)(vec((*this)[i])))[j];
+            // 旗標
+            ++bit_idx;
+            if(bit_idx==byte) {
+                // 輸出
+                img_c[img_idx] = (imch)bit.to_ulong();
+                ++img_idx;
+                bit_idx=0;
+            }
+        }
+        cout << "bit=" << ((bitset<byte>)(vec((*this)[i]))) << endl;
+    }
+    cout << (bitset<byte>)img_c[0] << endl;
+    // (*this) = img_c;
+}
+void imgraw::uncode(){
+
+}
+// 編碼
+imch imgraw::vec(imch value){
+    for(unsigned i = 0; i < c_b.size(); ++i) {
+        if (value < c_b[i])
+            return i;
+    }return c_b.size();
+}
+// 解碼
+imch imgraw::uvec(imch value){
+    size_t idx=(size_t)value;
+    if (idx == c_b.size()){
+        return ((256)-(c_b[idx-1]))/2 + c_b[idx-1];
+    } else if (idx > 0) {
+        return ((c_b[idx])-(c_b[idx-1]))/2 + c_b[idx-1];
+    }
+    return c_b[idx]/2;
+}
 void imgraw::unscalar(imint size=4){
     imgraw img_c(ImrSize(0, 0));
     imint new_size = ceil((this->filesize*8)/size);
@@ -72,7 +128,6 @@ void imgraw::unscalar(imint size=4){
     }
     (*this) = img_c;
 }
-
 void imgraw::scalar(imint size=4){
     imgraw img_c(ImrSize(0, 0));
     imint new_size = ceil((this->filesize*size)/byte);
