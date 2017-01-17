@@ -12,7 +12,7 @@ Final: 2016/10/13
 using namespace std;
 using namespace imr;
 
-#define AutoOpen 0
+#define AutoOpen 1
 #define Pic_name_in "IMG.raw"
 #define Pic_name_out "IMG_OUT.raw"
 #define Pic_x 256
@@ -25,13 +25,11 @@ int main(int argc, char const *argv[]) {
     // 讀取檔案
     img.read(Pic_name_in);
     img.code();
-    // img.s calar(comp_bit);
-    // img.write("IMG_OUT-COM.raw");
-    // img.unscalar(comp_bit);
+    img.uncode();
     // 提示訊息
     img.info();
     // 輸出檔案
-    // img.write(Pic_name_out);
+    img.write(Pic_name_out);
     // 開啟檔案
     if(AutoOpen==1)
         system(Pic_name_out);
