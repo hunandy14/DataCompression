@@ -133,8 +133,6 @@ namespace imr{
     public: // newzn
         void code(imgraw img);
         void uncode(imgraw img_vec);
-        void scalar(imint size);
-        void unscalar(imint size);
         void resize_canvas(imint filesize);
     private:
         imch vec(imch value);
