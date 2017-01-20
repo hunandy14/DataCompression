@@ -25,11 +25,12 @@ int main(int argc, char const *argv[]) {
     imgraw img_vec(ImrSize(0, 0));
     // 讀取檔案
     img.read(Pic_name_in);
-    img.code();
-    img.uncode();
-    // 提示訊息
-    img.info();
+    // 量化檔案
+    img_vec.code(img);
+    // 解量化檔案
+    img.uncode(img_vec);
     // 輸出檔案
+    img.info();
     img.write(Pic_name_out);
     // 開啟檔案
     if(AutoOpen==1)

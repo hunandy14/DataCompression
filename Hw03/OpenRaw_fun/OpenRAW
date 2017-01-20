@@ -131,8 +131,8 @@ namespace imr{
         imgraw operator-(const imgraw &p);
         imgraw operator-(const imch value);
     public: // newzn
-        void code();
-        void uncode();
+        void code(imgraw img);
+        void uncode(imgraw img_vec);
         void scalar(imint size);
         void unscalar(imint size);
         void resize_canvas(imint filesize);
