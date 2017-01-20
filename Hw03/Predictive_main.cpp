@@ -22,6 +22,7 @@ using namespace imr;
 int main(int argc, char const *argv[]) {
     // 創建畫布
     imgraw img(ImrSize(Pic_y, Pic_x));
+    imgraw img_vec(ImrSize(0, 0));
     // 讀取檔案
     img.read(Pic_name_in);
     img.code();
