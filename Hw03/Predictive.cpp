@@ -67,9 +67,12 @@ void imgraw::code(imgraw img){
 }
 void imgraw::uncode(imgraw img_vec){
     const size_t size=3;
-    // 調整大小
+    // 檢查大小
     imint new_size = ceil((img_vec.filesize*byte)/size);
-    (*this).resize_canvas(new_size);
+    if(new_size != (imint)this->filesize) {
+        cout << "畫布大小有誤" << endl;
+        return;
+    }
     // 旗標
     int bit_idx=0, img_idx=0;
     // bit暫存
