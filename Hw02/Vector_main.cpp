@@ -37,7 +37,7 @@ int main(int argc, char const *argv[]) {
         if (temp <= 0.01)
             break;
     }tra.write("tra.raw");
-
+    // 合併檔案
     img.merge(tra, idx).write("IMG_tra.raw");
     //---------------------------------------------------------
     // 開啟檔案
