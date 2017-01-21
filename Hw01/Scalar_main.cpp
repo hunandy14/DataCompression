@@ -27,7 +27,7 @@ int main(int argc, char const *argv[]) {
     img.read(Pic_name_in);
     // 壓縮檔案
     img_vec.scalar(img, comp_bit);
-    // img.write("IMG_OUT-COM.raw");
+    img_vec.write("IMG_OUT-COM.raw");
     // 解壓縮檔案
     img.unscalar(img_vec, comp_bit);
     // 提示訊息
