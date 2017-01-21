@@ -67,9 +67,12 @@ void imgraw::scalar(imgraw img, size_t size=4){
 }
 // 解量化
 void imgraw::unscalar(imgraw img_vec, size_t size=4){
-    // 調整大小
+    // 檢查大小
     size_t new_size = ceil((img_vec.filesize*byte)/size);
-    (*this).resize_canvas(new_size);
+    if(new_size != (size_t)(*this).filesize) {
+        cout << "畫布大小有誤" << endl;
+        return;
+    }
     // 旗標
     size_t bit_idx=0, img_idx=0;
     // bit暫存
