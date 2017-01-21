@@ -7,7 +7,6 @@ Final: 2016/10/13
 #ifndef OPEN_RAW
 #define OPEN_RAW
 
-
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -126,9 +125,9 @@ namespace imr{
         imgraw operator-(const imgraw &p);
         imgraw operator-(const imch value);
     public:
-        void scalar(imint size);
-        void unscalar(imint size);
-        void resize_canvas(imint filesize);
+        void scalar(imgraw img, size_t size);
+        void unscalar(imgraw img_vec, size_t size);
+        void resize_canvas(size_t filesize);
     private:
         ifstream::pos_type filesize;
         string filename;

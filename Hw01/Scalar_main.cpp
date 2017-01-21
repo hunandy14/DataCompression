@@ -22,11 +22,14 @@ using namespace imr;
 int main(int argc, char const *argv[]) {
     // 創建畫布
     imgraw img(ImrSize(Pic_y, Pic_x));
+    imgraw img_vec(ImrSize(0, 0));
     // 讀取檔案
     img.read(Pic_name_in);
-    img.scalar(comp_bit);
-    img.write("IMG_OUT-COM.raw");
-    img.unscalar(comp_bit);
+    // 壓縮檔案
+    img_vec.scalar(img, comp_bit);
+    // img.write("IMG_OUT-COM.raw");
+    // 解壓縮檔案
+    img.unscalar(img_vec, comp_bit);
     // 提示訊息
     img.info();
     // 輸出檔案
